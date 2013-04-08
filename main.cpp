@@ -1,14 +1,14 @@
 #include "stdafx.h"
 
-#include "myInit.h"
-#include "myUtils.h"
-#include "GL_utilities.h"
-#include "LoadTGA2.h"
-#include "loadobj.h"
-#include "Model.h"
-#include "Object.h"
-#include "Player.h"
-#include "fixModel.h"
+#include "Modules/myInit.h"
+#include "Modules/myUtils.h"
+#include "Modules/GL_utilities.h"
+#include "Modules/LoadTGA2.h"
+#include "Modules/loadobj.h"
+#include "Modules/Model.h"
+#include "Modules/Object.h"
+#include "Modules/Player.h"
+#include "Modules/fixModel.h"
 
 // Reference to shader program
 GLuint program;
@@ -18,22 +18,21 @@ int main()
 	// SFML window that will host our OpenGL magic
     sf::Window window(sf::VideoMode(1280, 720), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
     window.setVerticalSyncEnabled(true);
-
-	my::Model	cubeModel;
-	Object	cube;
-	Player	player;
-	GLuint	texture;
 	
+	my::Model	cubeModel;
+	Object		cube;
+	Player		player;
+	GLuint		texture;
 	
 	Model* skyboxModel;
 
-	std::cout << "Main 1" << std::endl;
-
+	/*
 	skyboxModel = LoadModelPlus("Models/skybox.obj",
 										program,
 										"in_Position",
 										"in_Normal",
 										"inTexCoord");
+										*/
 
 	glewInit();
 	shaderInit(&program);
@@ -45,7 +44,7 @@ int main()
 				"in_Color");
 	cube.init(&cubeModel);
 	LoadTGATextureSimple("Models/maskros512.tga", &texture);
-
+	
     // Main loop presented by SFML,
 	bool running = true;
     while (running)
@@ -63,6 +62,7 @@ int main()
 
     // release resources...
 	glDeleteVertexArrays(1, &cubeModel.VAO);
+	
     return 0;
 }
 
