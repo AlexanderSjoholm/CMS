@@ -25,7 +25,6 @@ int main()
 	GLuint		texture;
 	
 	Model* skyboxModel;
-
 	/*
 	skyboxModel = LoadModelPlus("Models/skybox.obj",
 										program,
@@ -43,7 +42,7 @@ int main()
 				"in_Position",
 				"in_Color");
 	cube.init(&cubeModel);
-	LoadTGATextureSimple("Models/maskros512.tga", &texture);
+	LoadTGATextureSimple("Textures/maskros512.tga", &texture);
 	
     // Main loop presented by SFML,
 	bool running = true;
