@@ -1,4 +1,5 @@
-#include "stdafx.h"
+#include "stdafx.h" // Gör att Kompilatorn hittar filen (derp)
+#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
 #include "Player.h"
 
 Player::Player()
@@ -7,16 +8,18 @@ Player::Player()
 	lookAtVector	= cv::Vec3f(0, 0, 0);
 	upVector		= cv::Vec3f(0, 1, 0);
 
-	sensitivity = 0.2f;
-	movementSpeed = 0.4f;
+	sensitivity = 0.05f;
+	movementSpeed = 10.0f;
+
 }
 
 void Player::init()
 {
 
+
 }
 
-void Player::lookAtUpdate()
+void Player::lookAtUpdate(float dt)
 {
 	cv::Vec3f n = cv::normalize(position - lookAtVector);
 
@@ -44,31 +47,56 @@ void Player::lookAtUpload(GLuint program)
 	glUniformMatrix4fv(glGetUniformLocation(program, "lookAtMatrix"), 1, GL_TRUE, lookAtMatrix.ptr<GLfloat>());
 }
 
-void Player::moveForward()
+void Player::moveForward(float dt)
 {
 	std::cout << "W" << std::endl;
-	position += cv::normalize(lookAtVector - position)*movementSpeed;
+	position += cv::normalize(lookAtVector - position)*movementSpeed*dt;
 	std::cout << position << std::endl;
 }
-void Player::moveBackward()
+void Player::moveBackward(float dt)
 {
 	std::cout << "S" << std::endl;
-	position -= cv::normalize(lookAtVector - position)*movementSpeed;
+	position -= cv::normalize(lookAtVector - position)*movementSpeed*dt;
 	std::cout << position << std::endl;
 }
-void Player::moveLeft()
+void Player::moveLeft(float dt)
 {
 	std::cout << "A" << std::endl;
-	position -= cv::normalize( (lookAtVector - position).cross(upVector) )*movementSpeed;
+	position -= cv::normalize( (lookAtVector - position).cross(upVector) )*movementSpeed*dt;
 	std::cout << position << std::endl;
 }
-void Player::moveRight()
+void Player::moveRight(float dt)
 {
 	std::cout << "D" << std::endl;
-	position += cv::normalize( (lookAtVector - position).cross(upVector) )*movementSpeed;
+	position += cv::normalize( (lookAtVector - position).cross(upVector) )*movementSpeed*dt;
 	std::cout << position << std::endl;
 }
-void Player::lookUp()
+
+
+void Player::xLook(float dt, int dx)
+{
+	std::cout << "xlook " << dx << std::endl;
+	cv::Vec3f lookAtDirection = lookAtVector - position;
+	GLfloat length = (GLfloat)cv::norm(lookAtDirection);
+	cv::Vec3f helpVector = cv::normalize(lookAtDirection.cross(upVector));
+
+	lookAtVector = position + cv::normalize(lookAtDirection + sensitivity*helpVector*dx)*length;
+	upVector = cv::normalize(helpVector.cross(lookAtVector - position));
+}
+
+void Player::yLook(float dt, int dy)
+{
+	std::cout << "ylook " << dy << std::endl;
+	cv::Vec3f lookAtDirection = lookAtVector - position;
+	GLfloat length = (GLfloat)cv::norm(lookAtDirection);
+	cv::Vec3f helpVector = lookAtDirection.cross(upVector);
+
+	lookAtVector = position + cv::normalize(lookAtDirection + sensitivity*upVector*dy)*length;
+	upVector = cv::normalize(helpVector.cross(lookAtVector - position));
+}
+
+// Old functions no longer needed (don't actually depend on dt)
+void Player::lookUp(float dt)
 {
 	std::cout << "Up" << std::endl;
 	cv::Vec3f lookAtDirection = lookAtVector - position;
@@ -78,7 +106,7 @@ void Player::lookUp()
 	lookAtVector = position + cv::normalize(lookAtDirection + sensitivity*upVector)*length;
 	upVector = cv::normalize(helpVector.cross(lookAtVector - position));
 }
-void Player::lookDown()
+void Player::lookDown(float dt)
 {
 	std::cout << "Down" << std::endl;
 	cv::Vec3f lookAtDirection = lookAtVector - position;
@@ -88,7 +116,7 @@ void Player::lookDown()
 	lookAtVector = position + cv::normalize(lookAtDirection - sensitivity*upVector)*length;
 	upVector = cv::normalize(helpVector.cross(lookAtVector - position));
 }
-void Player::lookLeft()
+void Player::lookLeft(float dt)
 {
 	std::cout << "Left" << std::endl;
 	cv::Vec3f lookAtDirection = lookAtVector - position;
@@ -98,7 +126,7 @@ void Player::lookLeft()
 	lookAtVector = position + cv::normalize(lookAtDirection - sensitivity*helpVector)*length;
 	upVector = cv::normalize(helpVector.cross(lookAtVector - position));
 }
-void Player::lookRight()
+void Player::lookRight(float dt)
 {
 	std::cout << "Right" << std::endl;
 	cv::Vec3f lookAtDirection = lookAtVector - position;

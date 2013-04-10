@@ -3,9 +3,15 @@
 #include "stdafx.h"
 #include "myUtils.h"
 
-void handleEvents(sf::Window* window, bool* running, Player* player)
+void handleEvents(sf::Window* window, bool* running, Player* player, float dt)
 {
     sf::Event event;
+	//relative mouse movements (brought to you by OpenCV because SFML sucks)
+	cv::Vec2i dMouse;
+	cv::Vec2i windowCenter;
+	//sf::Vector2u windowCenter;
+	int dx, dy;
+
 
     while (window->pollEvent(event))
     {
@@ -29,32 +35,46 @@ void handleEvents(sf::Window* window, bool* running, Player* player)
 		}
     }
 
+	dx = sf::Mouse::getPosition(*window).x - window->getSize().x / 2;
+	dy = sf::Mouse::getPosition(*window).y - window->getSize().y / 2; 
+	dy = -dy; // Invert y axis
+	
+	//dMouse = sf::Mouse::getPosition(*window) - windowCenter;
+	sf::Mouse::setPosition(sf::Vector2i(window->getSize().x / 2, window->getSize().y / 2),  *window);
+
+
+	if (dx != 0)
+		player->xLook(dt, dx);
+	if (dy != 0)
+		player->yLook(dt, dy);
+
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		std::cout << "Shit" << std::endl;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-		player->moveForward();
+		player->moveForward(dt);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		player->moveBackward();
+		player->moveBackward(dt);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		player->moveLeft();
+		player->moveLeft(dt);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		player->moveRight();
+		player->moveRight(dt);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		player->lookUp();
+		player->lookUp(dt);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		player->lookDown();
+		player->lookDown(dt);
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		player->lookLeft();
+		player->lookLeft(dt);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		player->lookRight();
+		player->lookRight(dt);
 }
 
 

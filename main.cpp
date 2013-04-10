@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "stdafx.h" // Gör att Kompilatorn hittar filen
 
 #include "Modules/myInit.h"
 #include "Modules/myUtils.h"
@@ -15,9 +15,12 @@ GLuint program;
 
 int main()
 {
+
+	
 	// SFML window that will host our OpenGL magic
     sf::Window window(sf::VideoMode(1280, 720), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
     window.setVerticalSyncEnabled(true);
+	window.setMouseCursorVisible(false);
 	
 	my::Model	cubeModel;
 	Object		cube;
@@ -44,12 +47,16 @@ int main()
 	cube.init(&cubeModel);
 	LoadTGATextureSimple("Textures/maskros512.tga", &texture);
 	
-    // Main loop presented by SFML,
+
+	// SFML built-in clock
+	sf::Clock clock;
 	bool running = true;
     while (running)
     {
-		handleEvents(&window, &running, &player);
-		player.lookAtUpdate();
+		float dt = clock.getElapsedTime().asSeconds();
+		clock.restart();
+		handleEvents(&window, &running, &player, dt);
+		player.lookAtUpdate(dt);
 		cube.update(0,0,0, 0,0,0, 0,0.04f,0);
 
 		window.setActive();

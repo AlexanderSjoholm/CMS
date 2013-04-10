@@ -9,17 +9,21 @@ public:
 	
 	Player();
 	void init();
-	void lookAtUpdate();
+	void lookAtUpdate(float dt);
 	void lookAtUpload(GLuint program);
 
-	void moveForward();
-	void moveBackward();
-	void moveLeft();
-	void moveRight();
-	void lookUp();
-	void lookDown();
-	void lookLeft();
-	void lookRight();
+	void moveForward(float dt);
+	void moveBackward(float dt);
+	void moveLeft(float dt);
+	void moveRight(float dt);
+	void lookUp(float dt);
+	void lookDown(float dt);
+	void lookLeft(float dt);
+	void lookRight(float dt);
+
+	void xLook(float dt, int dx);
+	void yLook(float dt, int dy);
+
 
 	cv::Vec3f position, lookAtVector, upVector;
 	cv::Mat lookAtMatrix;
