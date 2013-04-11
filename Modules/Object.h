@@ -21,6 +21,7 @@ public:
 				GLfloat scaleX, GLfloat scaleY, GLfloat scaleZ,
 				GLfloat angX, GLfloat angY, GLfloat angZ);
 	
+	cv::Mat position;
 	Model* model;
 private:
 	void updateMatrices();
@@ -28,6 +29,9 @@ private:
 			scaleX, scaleY, scaleZ,
 			angX, angY, angZ;
 
+
+	cv::Mat scale;
+	
 	cv::Mat scaleTrans, rotX, rotY, rotZ;
 };
 

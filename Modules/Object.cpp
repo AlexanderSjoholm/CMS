@@ -14,7 +14,10 @@ void Object::init(	Model* _model, GLuint _program, GLchar* _vertexAttributeName,
 	model->vertexAttributeName = _vertexAttributeName;
 	model->normalAttributeName = _normalAttributeName;
 	model->program = _program;
-
+	
+	position = cv::Mat::zeros(3, 1, CV_32FC1);
+	scale = cv::Mat::eye(3, 3, CV_32FC1);
+	
 	transX = 0.0f;
 	transY = 0.0f;
 	transZ = 0.0f;
@@ -46,7 +49,7 @@ void Object::draw(Player* player)
 
 	glBindVertexArray(model->VAO);
 	//glDrawArrays(GL_TRIANGLES, 0, 6);
-	std::cout << model->numberOfIndices << std::endl;
+	//std::cout << model->numberOfIndices << std::endl;
 	glDrawElements(GL_TRIANGLES, model->numberOfIndices, GL_UNSIGNED_INT, 0);
 }
 
@@ -54,6 +57,10 @@ void Object::update(GLfloat _transX, GLfloat _transY, GLfloat _transZ,
 					GLfloat _scaleX, GLfloat _scaleY, GLfloat _scaleZ,
 					GLfloat _angX, GLfloat _angY, GLfloat _angZ)
 {
+	position.at<float>(0) += _transX;
+	position.at<float>(1) += _transY;
+	position.at<float>(2) += _transZ;
+	
 	transX += _transX;
 	transY += _transY;
 	transZ += _transZ;
@@ -73,6 +80,10 @@ void Object::set(	GLfloat _transX, GLfloat _transY, GLfloat _transZ,
 					GLfloat _scaleX, GLfloat _scaleY, GLfloat _scaleZ,
 					GLfloat _angX, GLfloat _angY, GLfloat _angZ)
 {
+	position.at<float>(0) += _transX;
+	position.at<float>(1) += _transY;
+	position.at<float>(2) += _transZ;
+	
 	transX = _transX;
 	transY = _transY;
 	transZ = _transZ;

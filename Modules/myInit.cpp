@@ -29,7 +29,7 @@ char* readFile2Char(char* file)
 	return buffer;
 }
 
-void shaderInit(GLuint* program)
+void shaderInit(GLuint* program, std::string vertexPath, std::string fragmentPath)
 {
 	// Program and Shader Identifiers
 	GLchar *vertexCode, *fragmentCode;
@@ -39,8 +39,10 @@ void shaderInit(GLuint* program)
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	// Read shaders from external files
-	vertexCode = readFile2Char("Shaders/test.vert");
-	fragmentCode = readFile2Char("Shaders/test.frag");
+	//vertexCode = readFile2Char("Shaders/test.vert");
+	//fragmentCode = readFile2Char("Shaders/test.frag");
+	vertexCode = readFile2Char((char*)vertexPath.c_str());
+	fragmentCode = readFile2Char((char*)fragmentPath.c_str());	
 	// Print shaders just for fun
 	//cout << vertexCode << endl << fragmentCode;
 	glShaderSource(vertexShader, 1, (const GLchar **) &vertexCode, NULL);  

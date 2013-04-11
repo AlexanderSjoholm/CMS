@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
+#include <list>
 
 // Usefull defines
 #define pi 3.14159265359

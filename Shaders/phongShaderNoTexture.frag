@@ -12,5 +12,5 @@ void main(void)
 	
 	//out_Color = vec4(abs(ex_Position), 1.0);
 	//out_Color = vec4(ex_Color, 1.0)*();
-	out_Color = vec4(1.0, 1.0, 1.0, 1.0);
+	out_Color = vec4(1.0, 0.0, 1.0, 1.0);
 }

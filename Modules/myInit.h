@@ -10,7 +10,7 @@
 //extern GLfloat projectionMatrix[];
 
 char* readFile2Char(char* file);
-void shaderInit(GLuint* program);
+void shaderInit(GLuint* program, std::string vertexPath, std::string fragmentPath);
 void GLInit();
 
 

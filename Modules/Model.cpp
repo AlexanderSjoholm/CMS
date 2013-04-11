@@ -54,12 +54,12 @@ void Model::upload()
 	glBufferData(GL_ARRAY_BUFFER, vertexArray.size()*sizeof(GLfloat), &vertexArray.front(), GL_STATIC_DRAW);
 	glVertexAttribPointer(glGetAttribLocation(program, vertexAttributeName), 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(glGetAttribLocation(program, vertexAttributeName));
-
+/*
 	glBindBuffer(GL_ARRAY_BUFFER, NBO);
 	glBufferData(GL_ARRAY_BUFFER, normalArray.size()*sizeof(GLfloat), &normalArray.front(), GL_STATIC_DRAW);
 	glVertexAttribPointer(glGetAttribLocation(program, normalAttributeName), 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(glGetAttribLocation(program, normalAttributeName));
-
+	*/
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexArray.size()*sizeof(unsigned int), &indexArray.front(), GL_STATIC_DRAW);
 }
