@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
 #include "Object.h"
 #include "myUtils.h"
 

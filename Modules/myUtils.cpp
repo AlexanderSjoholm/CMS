@@ -1,6 +1,7 @@
 // myUtils.cpp
 
 #include "stdafx.h"
+#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
 #include "myUtils.h"
 
 void handleEvents(sf::Window* window, bool* running, Player* player, float dt)
@@ -50,7 +51,10 @@ void handleEvents(sf::Window* window, bool* running, Player* player, float dt)
 
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-		std::cout << "Shit" << std::endl;
+		player->moveUp(dt);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+		player->moveDown(dt);
+		//std::cout << "Shit" << std::endl;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		player->moveForward(dt);

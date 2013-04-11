@@ -8,7 +8,7 @@ Player::Player()
 	lookAtVector	= cv::Vec3f(0, 0, 0);
 	upVector		= cv::Vec3f(0, 1, 0);
 
-	sensitivity = 0.05f;
+	sensitivity = 0.025f;
 	movementSpeed = 10.0f;
 
 }
@@ -45,6 +45,24 @@ void Player::lookAtUpdate(float dt)
 void Player::lookAtUpload(GLuint program)
 {
 	glUniformMatrix4fv(glGetUniformLocation(program, "lookAtMatrix"), 1, GL_TRUE, lookAtMatrix.ptr<GLfloat>());
+}
+
+void Player::moveUp(float dt)
+{
+	std::cout << "moveUp" << std::endl;
+	cv::Vec3f prevPos = position;
+	position += cv::normalize(upVector)*movementSpeed*dt;
+	lookAtVector += position - prevPos;
+	std::cout << position - prevPos << std::endl;
+}
+
+void Player::moveDown(float dt)
+{
+	std::cout << "moveDown" << std::endl;
+	cv::Vec3f prevPos = position;
+	position -= cv::normalize(upVector)*movementSpeed*dt;
+	lookAtVector += position - prevPos;
+	std::cout << position - prevPos << std::endl;
 }
 
 void Player::moveForward(float dt)

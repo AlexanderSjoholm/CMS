@@ -12,6 +12,7 @@
 
 // Reference to shader program
 GLuint program;
+float dt;
 
 int main()
 {
@@ -53,7 +54,7 @@ int main()
 	bool running = true;
     while (running)
     {
-		float dt = clock.getElapsedTime().asSeconds();
+		dt = clock.getElapsedTime().asSeconds();
 		clock.restart();
 		handleEvents(&window, &running, &player, dt);
 		player.lookAtUpdate(dt);

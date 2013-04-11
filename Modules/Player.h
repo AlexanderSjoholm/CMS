@@ -16,10 +16,13 @@ public:
 	void moveBackward(float dt);
 	void moveLeft(float dt);
 	void moveRight(float dt);
+	void moveUp(float dt);
+	void moveDown(float dt);
 	void lookUp(float dt);
 	void lookDown(float dt);
 	void lookLeft(float dt);
 	void lookRight(float dt);
+
 
 	void xLook(float dt, int dx);
 	void yLook(float dt, int dy);
