@@ -1,7 +1,7 @@
 // myUtils.cpp
 
 #include "stdafx.h"
-#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
+//#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
 #include "myUtils.h"
 
 void handleEvents(sf::Window* window, bool* running, Player* player, float dt)
@@ -30,9 +30,12 @@ void handleEvents(sf::Window* window, bool* running, Player* player, float dt)
 		{
 			if (event.key.code == sf::Keyboard::Escape)
 				*running = false;
-
+			
 			if (event.key.code == sf::Keyboard::F11)
-				window->create(sf::VideoMode(1280, 720), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
+			{
+				window->close();
+				window->create(sf::VideoMode::getDesktopMode(), "OpenGL", sf::Style::Fullscreen, sf::ContextSettings(32));
+			}
 		}
     }
 

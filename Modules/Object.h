@@ -11,7 +11,7 @@ class Object
 public:
 	
 	Object();
-	void init(	my::Model* model);
+	void init(	Model* model, GLuint _program, GLchar* _vertexAttributeName, GLchar* _normalAttributName);
 	void draw(Player* player);
 	void update(GLfloat transX, GLfloat transY, GLfloat transZ, 
 				GLfloat scaleX, GLfloat scaleY, GLfloat scaleZ,
@@ -21,7 +21,7 @@ public:
 				GLfloat scaleX, GLfloat scaleY, GLfloat scaleZ,
 				GLfloat angX, GLfloat angY, GLfloat angZ);
 	
-	my::Model* model;
+	Model* model;
 private:
 	void updateMatrices();
 	GLfloat transX, transY, transZ, 

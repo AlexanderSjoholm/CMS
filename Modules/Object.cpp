@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
+//#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
 #include "Object.h"
 #include "myUtils.h"
 
@@ -8,9 +8,12 @@ Object::Object()
 
 }
 
-void Object::init(	my::Model* _model)
+void Object::init(	Model* _model, GLuint _program, GLchar* _vertexAttributeName, GLchar* _normalAttributeName)
 {
 	model = _model;
+	model->vertexAttributeName = _vertexAttributeName;
+	model->normalAttributeName = _normalAttributeName;
+	model->program = _program;
 
 	transX = 0.0f;
 	transY = 0.0f;
@@ -20,9 +23,9 @@ void Object::init(	my::Model* _model)
 	scaleY = 1.0f;
 	scaleZ = 1.0f;
 
-	angX = (float)pi/4;
-	angY = (float)pi/4;
-	angZ = (float)pi/4;
+	angX = 0;
+	angY = 0;
+	angZ = 0;
 
 	set(	transX, transY, transZ, 
 			scaleX, scaleY, scaleZ,
@@ -36,13 +39,15 @@ void Object::draw(Player* player)
 	glUniformMatrix4fv(glGetUniformLocation(model->program, "rotY"), 1, GL_TRUE, rotY.ptr<GLfloat>());
 	glUniformMatrix4fv(glGetUniformLocation(model->program, "rotZ"), 1, GL_TRUE, rotZ.ptr<GLfloat>());
 	glUniformMatrix4fv(glGetUniformLocation(model->program, "projectionMatrix"), 1, GL_TRUE, projectionMatrix);
-
+	
 	player->lookAtUpload(model->program);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glBindVertexArray(model->VAO);
-	glDrawArrays(GL_TRIANGLES, 0, 3*12); 
+	//glDrawArrays(GL_TRIANGLES, 0, 6);
+	std::cout << model->numberOfIndices << std::endl;
+	glDrawElements(GL_TRIANGLES, model->numberOfIndices, GL_UNSIGNED_INT, 0);
 }
 
 void Object::update(GLfloat _transX, GLfloat _transY, GLfloat _transZ, 

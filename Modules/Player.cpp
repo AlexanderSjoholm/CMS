@@ -1,5 +1,5 @@
 #include "stdafx.h" // Gör att Kompilatorn hittar filen (derp)
-#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
+//#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
 #include "Player.h"
 
 Player::Player()
@@ -10,7 +10,6 @@ Player::Player()
 
 	sensitivity = 0.025f;
 	movementSpeed = 10.0f;
-
 }
 
 void Player::init()

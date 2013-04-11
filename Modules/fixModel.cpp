@@ -3,6 +3,18 @@
 #include "stdafx.h"
 #include "fixModel.h"
 
+std::vector<GLfloat> vectorVertices;
+
+GLuint indices[3*2] = { 0, 1, 2,
+						0, 2, 3};
+
+GLfloat groundVertex[3*6] = {	-2.0, 0.0, -2.0,
+								2.0, 0.0, -2.0,
+								2.0, 0.0, 2.0,
+								-2.0, 0.0, -2.0,
+								2.0, 0.0, 2.0,
+								-2.0, 0.0, 2.0 };
+
 GLfloat vertices[36*3] = {
 						-0.5,-0.5,-0.5,	// 0
 						-0.5,0.5,-0.5,		// 3
