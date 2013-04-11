@@ -3,8 +3,8 @@
 #include "Modules/myInit.h"
 #include "Modules/myUtils.h"
 #include "Modules/GL_utilities.h"
+#include "Modules/myLoadObj.h"
 #include "Modules/LoadTGA2.h"
-#include "Modules/loadobj.h"
 #include "Modules/Model.h"
 #include "Modules/Object.h"
 #include "Modules/Player.h"
@@ -23,7 +23,7 @@ int main()
     window.setVerticalSyncEnabled(true);
 	window.setMouseCursorVisible(false);
 	
-	my::Model	cubeModel;
+	Model	cubeModel;
 	Object		cube;
 	Player		player;
 	GLuint		texture;
@@ -41,13 +41,19 @@ int main()
 	shaderInit(&program);
 	GLInit();
 	
+	Model	testModel;
+	myLoadObj("Models/unitSphere.obj", &testModel);
+
+	cube.init(&testModel, program, "in_Position", "in_Normal");
+	testModel.upload();
+	/*
 	cubeModel.init(	
 				program, 
 				"in_Position",
 				"in_Color");
-	cube.init(&cubeModel);
+	cube.init(&cubeModel, program, "in_Position", "in_Normal");
 	LoadTGATextureSimple("Textures/maskros512.tga", &texture);
-	
+	*/
 
 	// SFML built-in clock
 	sf::Clock clock;
