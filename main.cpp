@@ -10,11 +10,13 @@
 #include "Modules/Player.h"
 #include "Modules/fixModel.h"
 #include "Modules/SolarSystem.h"
+#include "Modules/Physics.h"
 
 // Reference to shader program
-GLuint program, program2;
+GLuint program, program2, program3;
 float dt;
 SolarSystem solsystem;
+Physics physEngine;
 
 int main()
 {
@@ -41,22 +43,25 @@ int main()
 	glewInit();
 	GLInit();
 
-	//shaderInit(&program); Är konstigt, antagligen jag som är retard.
 	shaderInit(&program, "Shaders/test.vert", "Shaders/test.frag");
 	shaderInit(&program2, "Shaders/test.vert", "Shaders/phongShaderNoTexture.frag");
 
 	myLoadObj("Models/unitSphere.obj", &testModel);
 	sphere.init(&testModel, program, "in_Position", "in_Normal");
+	sphere.set(cv::Vec3f(0,0,0), cv::Vec3f(2,2,2), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0));
 	testModel.upload();
 
-	myLoadObj("Models/windmill-blade.obj", &bladeModel);
+	myLoadObj("Models/unitSphere.obj", &bladeModel);
 	blade.init(&bladeModel, program2,  "in_Position", "in_Normal");
+	blade.set(cv::Vec3f(10,0,0), cv::Vec3f(1,1,1), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0));
+	blade.setOrbit(&sphere, 10);
 	bladeModel.upload();
-	blade.set(1,1,1, 1,1,1, 0,0.04f,0);
 
-	solsystem.addPlanet(&blade);	
-	solsystem.addPlanet(&sphere);
-		
+	myLoadObj("Models/unitSphere.obj", &cubeModel);
+	cube.init(&cubeModel, program, "in_Position", "in_Normal");
+	cube.set(cv::Vec3f(13,0,0), cv::Vec3f(0.5,0.5,0.5), cv::Vec3f(0,0,0), cv::Vec3f(0,-10,0));
+	cube.setOrbit(&blade, 3);
+	cubeModel.upload();
 	/*
 	cubeModel.init(	
 				program, 
@@ -65,6 +70,10 @@ int main()
 	cube.init(&cubeModel, program, "in_Position", "in_Normal");
 	LoadTGATextureSimple("Textures/maskros512.tga", &texture);
 	*/
+	solsystem.addPlanet(&cube);
+	solsystem.addPlanet(&blade);	
+	solsystem.addPlanet(&sphere);
+
 
 	// SFML built-in clock
 	sf::Clock clock;
@@ -77,14 +86,15 @@ int main()
 		player.lookAtUpdate(dt);
 		
 		//cube.update(0,0,0, 0,0,0, 0,0.04f,0);
-		solsystem.update();
+		solsystem.update(physEngine, dt);
 		window.setActive();
 
-		// får av någon anledning inte rita ut mer än ett objekt i taget..
 		solsystem.draw(player);
 		//sphere.draw(&player);
-	
+		std::cout << cube.position - blade.position << std::endl;
         window.display();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     }
 
     // release resources...

@@ -13,22 +13,16 @@ void SolarSystem::addPlanet(Object * planet, bool isLightSource, cv::Vec3b color
 	if (isLightSource)
 	{
 		Light tempLight;
-		tempLight.position = planet->position;
+		tempLight.position = &planet->position;
 		tempLight.color = color;
-		lightList.push_front(&tempLight);
+		lightList.push_front(tempLight);
 	}
 	return;
 }
 
-void SolarSystem::update()
+void SolarSystem::update(Physics & PhysEngine, float dt)
 {
-	//Call physics blahblahblah
-
-	//Since no physics:
-	for (std::list<Object>::iterator it = planetList.begin(); it != planetList.end(); it++)
-	{
-		it->update(0,0,0, 0,0,0, 0,0.04f,0);
-	}
+	PhysEngine.updatePositions(planetList, itemList, dt);
 	return;
 }
 

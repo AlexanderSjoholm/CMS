@@ -15,28 +15,20 @@ void Object::init(	Model* _model, GLuint _program, GLchar* _vertexAttributeName,
 	model->normalAttributeName = _normalAttributeName;
 	model->program = _program;
 	
-	position = cv::Mat::zeros(3, 1, CV_32FC1);
-	scale = cv::Mat::eye(3, 3, CV_32FC1);
-	
-	transX = 0.0f;
-	transY = 0.0f;
-	transZ = 0.0f;
+	position = cv::Vec3f(0, 0, 0);
+	velocity = cv::Vec3f(0, 0, 0);
+	scale = cv::Vec3f(0, 0, 0);
+	rotAngles = cv::Vec3f(0, 0, 0);
+	orbits = NULL;
+	distance = 0;
 
-	scaleX = 1.0f;
-	scaleY = 1.0f;
-	scaleZ = 1.0f;
-
-	angX = 0;
-	angY = 0;
-	angZ = 0;
-
-	set(	transX, transY, transZ, 
-			scaleX, scaleY, scaleZ,
-			angX, angY, angZ);
+	set(position, scale, rotAngles, velocity);
 }
 
 void Object::draw(Player* player)
 {
+	glUseProgram(model->program);
+	
 	glUniformMatrix4fv(glGetUniformLocation(model->program, "scaleTrans"), 1, GL_TRUE, scaleTrans.ptr<GLfloat>());
 	glUniformMatrix4fv(glGetUniformLocation(model->program, "rotX"), 1, GL_TRUE, rotX.ptr<GLfloat>());
 	glUniformMatrix4fv(glGetUniformLocation(model->program, "rotY"), 1, GL_TRUE, rotY.ptr<GLfloat>());
@@ -45,7 +37,7 @@ void Object::draw(Player* player)
 	
 	player->lookAtUpload(model->program);
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glBindVertexArray(model->VAO);
 	//glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -53,74 +45,71 @@ void Object::draw(Player* player)
 	glDrawElements(GL_TRIANGLES, model->numberOfIndices, GL_UNSIGNED_INT, 0);
 }
 
-void Object::update(GLfloat _transX, GLfloat _transY, GLfloat _transZ, 
-					GLfloat _scaleX, GLfloat _scaleY, GLfloat _scaleZ,
-					GLfloat _angX, GLfloat _angY, GLfloat _angZ)
+void Object::update(cv::Vec3f _position,
+					cv::Vec3f _scale,		
+					cv::Vec3f _rotAngles)
 {
-	position.at<float>(0) += _transX;
-	position.at<float>(1) += _transY;
-	position.at<float>(2) += _transZ;
-	
-	transX += _transX;
-	transY += _transY;
-	transZ += _transZ;
-
-	scaleX += _scaleX;
-	scaleY += _scaleY;
-	scaleZ += _scaleZ;
-
-	angX += _angX;
-	angY += _angY;
-	angZ += _angZ;
+	position += _position;
+	scale += _scale;
+	rotAngles += _rotAngles;
 
 	updateMatrices();
 }
 
-void Object::set(	GLfloat _transX, GLfloat _transY, GLfloat _transZ, 
-					GLfloat _scaleX, GLfloat _scaleY, GLfloat _scaleZ,
-					GLfloat _angX, GLfloat _angY, GLfloat _angZ)
+void Object::update(cv::Vec3f _dl)
 {
-	position.at<float>(0) += _transX;
-	position.at<float>(1) += _transY;
-	position.at<float>(2) += _transZ;
+	position += _dl;
+
+	updateMatrices();
+}
+
+void Object::setOrbit(Object* _orbits, double _distance)
+{
+	orbits = _orbits;
+	distance = _distance;
+}
+
+void Object::setPosition(cv::Vec3f _position)
+{
+	position = _position;
+	updateMatrices();
+}
+
+void Object::set(cv::Vec3f _position,	
+				 cv::Vec3f _scale,	
+				 cv::Vec3f _rotAngles,
+				 cv::Vec3f _velocity)
+{
+	position = _position;
+	scale = _scale;
+	rotAngles = _rotAngles;
+	velocity = _velocity;
 	
-	transX = _transX;
-	transY = _transY;
-	transZ = _transZ;
-
-	scaleX = _scaleX;
-	scaleY = _scaleY;
-	scaleZ = _scaleZ;
-
-	angX = _angX;
-	angY = _angY;
-	angZ = _angZ;
-
 	updateMatrices();
 }
 
 void Object::updateMatrices()
 {
-	GLfloat	scaleTransData[] = {	scaleX, 0.0f,	0.0f,	transX,
-									0.0f,	scaleY,	0.0f,	transY,
-									0.0f,	0.0f,	scaleZ, transZ,
+	GLfloat	scaleTransData[] = {	scale(0), 0.0f,	0.0f,	position(0),
+									0.0f,	scale(1),	0.0f,	position(1),
+									0.0f,	0.0f,	scale(2), position(2),
 									0.0f,	0.0f,	0.0f,	1.0f };
 	scaleTrans = cv::Mat(4, 4, CV_32FC1, scaleTransData).clone();
 	
 	GLfloat	rotXData[] = {	1.0f, 0.0f,			0.0f,		0.0f,
-							0.0f, cos(angX),	-sin(angX),	0.0f,
-							0.0f, sin(angX),	cos(angX),	0.0f,
+							0.0f, cos(rotAngles(0)),	-sin(rotAngles(0)),	0.0f,
+							0.0f, sin(rotAngles(0)),	cos(rotAngles(0)),	0.0f,
 							0.0f, 0.0f,			0.0f,		1.0f }; 
 	rotX = cv::Mat(4, 4, CV_32FC1, rotXData).clone();
 
-	GLfloat rotYData[] = {	cos(angY),	0.0f,	sin(angY),	0.0f,
+	GLfloat rotYData[] = {	cos(rotAngles(1)),	0.0f,	sin(rotAngles(1)),	0.0f,
 							0.0f,		1.0f,	0.0f,		0.0f,
-							-sin(angY),	0.0f,	cos(angY),	0.0f,
+							-sin(rotAngles(1)),	0.0f,	cos(rotAngles(1)),	0.0f,
 							0.0f,		0.0f,	0.0f,		1.0f };
 	rotY = cv::Mat(4, 4, CV_32FC1, rotYData).clone();
 
-	GLfloat rotZData[] = {	cos(angZ),	-sin(angZ),	0.0f, 0.0f,
-							sin(angZ),	cos(angZ),	0.0f, 0.0f,
+	GLfloat rotZData[] = {	cos(rotAngles(2)),	-sin(rotAngles(2)),	0.0f, 0.0f,
+							sin(rotAngles(2)),	cos(rotAngles(2)),	0.0f, 0.0f,
 							0.0f,		0.0f,		1.0f, 0.0f,
 							0.0f,		0.0f,		0.0f, 1.0f }; 
 	rotZ = cv::Mat(4, 4, CV_32FC1, rotZData).clone();
