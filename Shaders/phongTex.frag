@@ -36,9 +36,9 @@ void main(void)
 	
 	//out_Color = vec4(abs(ex_Position), 1.0);
 	//out_Color = vec4(ex_Color, 1.0);
-	out_Color = vec4(1, 1, 1, 1);
-		//out_Color = vec4(totalLight, 1);
+	//out_Color = vec4(1, 1, 1, 1);
+	//out_Color = vec4(totalLight, 1);
 	//out_Color = texel0 * vec4(1.0, 1.0, 1.0, 1.0);
 	//out_Color = texel0 * vec4(totalLight, 1);
-	//out_Color = (texel0 * diffuseComponent + texel1 * (1 - diffuseComponent)); // * vec4(totalLight, 1);
+	out_Color = (texel0 * diffuseComponent + texel1 * (1 - diffuseComponent)); // * vec4(totalLight, 1);
 }
