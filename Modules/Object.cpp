@@ -10,7 +10,7 @@ Object::Object()
 
 }
 
-void Object::init(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GLuint _texture0, GLuint _texture1)
+void Object::init(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GLuint _texture0, GLuint _texture1, GLuint _specularityMap)
 {
 	model = _model;
 
@@ -32,6 +32,7 @@ void Object::init(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GL
 
 	texture0 = _texture0;
 	texture1 = _texture1;
+	specularityMap = _specularityMap;
 
 	position = cv::Vec3f(0, 0, 0);
 	velocity = cv::Vec3f(0, 0, 0);
@@ -87,6 +88,12 @@ void Object::draw(Player* player)
 			glUniform1i(glGetUniformLocation(program, "Tex1"), 1);
 		}
 	}
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, specularityMap);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glUniform1i(glGetUniformLocation(program, "Tex2"), 2);
+	
 
 	// Bind the model's VAO and buffers to the program specified by the object
 	glBindVertexArray(model->VAO);
