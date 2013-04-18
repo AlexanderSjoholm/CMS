@@ -14,10 +14,12 @@ public:
 				GLchar* _colourAttributeName);
 	void upload();
 
-	GLuint program, VAO, VBO, NBO, IBO, CBO, numberOfVertices, numberOfIndices;
-	GLchar *vertexAttributeName, *normalAttributeName, *colourAttributeName;
-	std::vector<GLfloat> vertexArray, normalArray, texCoordArray;
-	std::vector<unsigned int> indexArray;
+	GLuint program, VAO, VBO, NBO, TBO, IBO, CBO, numberOfVertices, numberOfIndices;
+	GLchar *vertexAttributeName, *normalAttributeName, *texCoordAttributeName, *colourAttributeName;
+	
+	std::vector<cv::Vec3f> vertexArray, normalArray;
+	std::vector<cv::Vec2f> texCoordArray;
+	std::vector<cv::Vec3i> indexArray;
 private:
 	
 
