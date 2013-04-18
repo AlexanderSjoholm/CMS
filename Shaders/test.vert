@@ -1,11 +1,14 @@
 #version 150
 
-in vec3 in_Position;
-//in vec3 in_Color;
-in vec3 in_Normal;
-//in vec2 inTexCoord;
+in vec3 inPosition;
+in vec3 inNormal;
+in vec2 inTexCoord;
+//in vec3 inColor;
 
-out vec2 texCoord;
+out vec3 exNormal;
+out vec3 exPosition;
+out vec2 exTexCoord;
+//out vec3 exColor
 
 uniform mat4 scaleTrans;
 uniform mat4 rotX;
@@ -14,13 +17,11 @@ uniform mat4 rotZ;
 uniform mat4 projectionMatrix;
 uniform mat4 lookAtMatrix;
 
-out vec3 ex_Position;
-out vec3 ex_Color;
-
 void main(void)
 {
-	gl_Position = projectionMatrix * lookAtMatrix * scaleTrans * rotY * rotZ * rotX * vec4(in_Position, 1.0);
-	ex_Position = in_Position;
-	//texCoord = inTexCoord;
+	gl_Position = projectionMatrix * lookAtMatrix * scaleTrans * rotY * rotZ * rotX * vec4(inPosition, 1.0);
+	exPosition = vec3(scaleTrans * rotY * rotZ * rotX * vec4(inPosition, 1.0));
+	exNormal = mat3(scaleTrans * rotY * rotZ * rotX) * inNormal;
+	exTexCoord = inTexCoord;
 	//ex_Color = in_Color;
 }
