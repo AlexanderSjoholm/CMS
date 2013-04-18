@@ -19,9 +19,9 @@ class SolarSystem
 {
 public:
 	SolarSystem() {};
-	void addStar(Object * star, bool isLightSource = false, cv::Vec3b color = 0);
+	void addStar(Object * star, bool isLightSource = false, cv::Vec3f color = 0);
 	void update(Physics & PhysicsEngine, float dt);
-	void draw(Player & player);
+	void draw(Player * player);
 	//void addStaticLight(cv::Vec3b color);
 	void addItem(Object * item);
 

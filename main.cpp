@@ -13,7 +13,7 @@
 #include "Modules/Physics.h"
 #include <iostream>
 // Reference to shader program
-GLuint program, program2, program3;
+GLuint program, program2, program3, sunProgram;
 float dt = 0;
 SolarSystem solsystem;
 Physics physEngine;
@@ -30,13 +30,14 @@ int main()
 		
 	glewInit();
 	shaderInit(&program, "Shaders/test.vert", "Shaders/test.frag");
+	shaderInit(&sunProgram, "Shaders/sun.vert", "Shaders/sun.frag");
 	GLInit();
 	
 	//Model		cubeModel, sphereModel, bladeModel, testModel;
 	//Object		cube, sphere, blade;
 
 	Model		sphereModel;
-	Object		sphere;
+	Object		earth, sun, moon;
 	Player		player;
 
 	//myLoadObj("Models/myUnitCube.obj", &cubeModel);
@@ -56,59 +57,20 @@ int main()
 
 	//bumpMySphere(&sphereModel, &earthBumpMap);
 	sphereModel.upload();
-	sphere.init(&sphereModel, program, "inPosition", "inNormal", "inTexCoord", earthTextureDay, earthTextureNight);
+	moon.init(&sphereModel, program, "inPosition", "inNormal", "inTexCoord", earthTextureDay, earthTextureNight);
+	earth.init(&sphereModel, program, "inPosition", "inNormal", "inTexCoord", earthTextureDay, earthTextureNight);
+	sun.init(&sphereModel, sunProgram, "inPosition", "inNormal", "inTexCoord");
 	//sphereModel.upload();
 
-	//glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(GL_TEXTURE_2D, earthTexture);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    //glUniform1i(glGetUniformLocation(program, "Tex0"), 0);
 
-	//cube.update(0,0,0, 20,20,20, 0,0,0);
-	//sphere.update(0,0,0, 5,5,5, 0,0,0);
+	sun.set(cv::Vec3f(0,0,0), cv::Vec3f(2,2,2), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0));
+	earth.set(cv::Vec3f(10,0,0),  cv::Vec3f(1,1,1), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0));
+	moon.set(cv::Vec3f(14,0,0), cv::Vec3f(0.5,0.5,0.5), cv::Vec3f(0,0,0), cv::Vec3f(0,-10,0));
 	
-	//cube.update(cv::Vec3f(0,0,0),  cv::Vec3f(20,20,20), cv::Vec3f(0,0,0));
-	sphere.update(cv::Vec3f(0,0,0),  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0));
-
-	//shaderInit(&program, "Shaders/test.vert", "Shaders/test.frag");
-	//shaderInit(&program2, "Shaders/test.vert", "Shaders/phongShaderNoTexture.frag");
-	/*
-	myLoadObj("Models/unitSphere.obj", &testModel);
-	sphere.init(&testModel, program, "in_Position", "in_Normal", "Tex0", );
-	sphere.set(cv::Vec3f(0,0,0), cv::Vec3f(2,2,2), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0));
-	testModel.upload();
-
-	myLoadObj("Models/unitSphere.obj", &bladeModel);
-	blade.init(&bladeModel, program2,  "in_Position", "in_Normal");
-	blade.set(cv::Vec3f(10,0,0), cv::Vec3f(1,1,1), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0));
-	//blade.setOrbit(&sphere, 10);
-	bladeModel.upload();
-
-	myLoadObj("Models/unitSphere.obj", &cubeModel);
-	cube.init(&cubeModel, program, "in_Position", "in_Normal");
-	cube.set(cv::Vec3f(13,0,0), cv::Vec3f(0.5,0.5,0.5), cv::Vec3f(0,0,0), cv::Vec3f(0,-10,0));
-	//cube.setOrbit(&blade, 3);
-	cubeModel.upload();
-	/*
-	cubeModel.init(	
-				program, 
-				"in_Position",
-				"in_Color");
-	cube.init(&cubeModel, program, "in_Position", "in_Normal");
-	LoadTGATextureSimple("Textures/maskros512.tga", &texture);
-	*/
-	/*
-	blade.addSatellite(&cube, 3);
-	sphere.addSatellite(&blade, 10);	
-	solsystem.addStar(&sphere);
-	//std::cout << cube.orbits->position << std::endl;
-
-	solsystem.addPlanet(&cube);
-	solsystem.addPlanet(&blade);
-	solsystem.addPlanet(&sphere);
-
-	std::string asdf;
-	*/
+	
+	earth.addSatellite(&moon, 3);
+	sun.addSatellite(&earth, 10);
+	solsystem.addStar(&sun, true, cv::Vec3f(1,1,1));
 
 	// SFML built-in clock
 	sf::Clock clock;
@@ -121,23 +83,22 @@ int main()
 		player.lookAtUpdate(dt);
 
 		
-		sphere.update(cv::Vec3f(0,0,0),  cv::Vec3f(0,0,0), cv::Vec3f(0,0.01f,0));
+		earth.update(cv::Vec3f(0,0,0),  cv::Vec3f(0,0,0), cv::Vec3f(0,-0.05f,0));
 		
 		//cube.update(0,0,0, 0,0,0, 0,0.04f,0);
-		//solsystem.update(physEngine, dt);
 
 		window.setActive();
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
 
 		//cube.draw(&player);
-
-		sphere.draw(&player);
+		solsystem.update(physEngine, dt);
+		solsystem.draw(&player);
 
 		//solsystem.draw(player);
-		//sphere.draw(&player);
+		//earth.draw(&player);
         window.display();
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//std::cout << "dt: " << dt << std::endl;
 		//std::cin >> asdf;
 

@@ -88,7 +88,7 @@ void handleEvents(sf::Window* window, bool* running, Player* player, float dt)
 // The rotation matrices will be changed for animation
 // Perspective
 #define nearFrustum 1.0
-#define farFrustum 30.0
+#define farFrustum 100.0
 #define right 1.0
 #define left -1.0
 #define top 1.0

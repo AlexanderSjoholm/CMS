@@ -12,7 +12,7 @@ out vec4 out_Color;
 
 void main(void)
 {
-	vec3 lightPosition = vec3(0, 5, 10);
+	vec3 lightPosition = vec3(0, 0, 0);
 	vec3 lightColor = vec3(1, 1, 1);
 	float ambientCoeff = 0.3;
 	float diffuseCoeff = 0.7;

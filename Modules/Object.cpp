@@ -38,6 +38,11 @@ void Object::init(	Model* _model, GLuint _program, GLchar* _vertexAttributeName,
 
 void Object::draw(Player* player)
 {
+	for(std::map<float, Object*>::iterator it = satelliteMap.begin(); it != satelliteMap.end(); ++it)
+	{
+		it->second->draw(player);
+	}
+	
 	glUseProgram(program);
 	
 	// Upload Transformations

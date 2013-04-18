@@ -6,7 +6,7 @@
 #include "SolarSystem.h"
 
 
-void SolarSystem::addStar(Object * star, bool isLightSource, cv::Vec3b color)
+void SolarSystem::addStar(Object * star, bool isLightSource, cv::Vec3f color)
 {
 	starList.push_front(star);
 	
@@ -27,14 +27,14 @@ void SolarSystem::update(Physics & PhysEngine, float dt)
 	return;
 }
 
-void SolarSystem::draw(Player & player)
+void SolarSystem::draw(Player * player)
 {
 	//Draw everything
 	int herp = 0;
 	for (std::list<Object*>::iterator it = starList.begin(); it != starList.end(); it++)
 	{
 		herp++;
-		(*it)->draw(&player);
+		(*it)->draw(player);
 	}
 	return;
 }
