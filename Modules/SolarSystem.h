@@ -19,15 +19,14 @@ class SolarSystem
 {
 public:
 	SolarSystem() {};
-	void addStar(Object * planet, bool isLightSource = false, cv::Vec3b color = 0);
-	void addPlanet(Object * planet, bool isLightSource = false, cv::Vec3b color = 0);
+	void addStar(Object * star, bool isLightSource = false, cv::Vec3b color = 0);
 	void update(Physics & PhysicsEngine, float dt);
 	void draw(Player & player);
 	//void addStaticLight(cv::Vec3b color);
 	void addItem(Object * item);
 
 private:
-	std::list<Object*> starList, planetList; 
+	std::list<Object*> starList; 
 	std::list<Object> itemList;
 	std::list<Light> lightList;
 };

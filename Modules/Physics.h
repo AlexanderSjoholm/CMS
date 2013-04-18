@@ -10,7 +10,7 @@ class Physics
 {
 public:
 	Physics() {};
-	void updatePositions(std::list<Object*>& planetList, std::list<Object>& itemList, float dt);
+	void updatePositions(std::list<Object*>& starList, std::list<Object>& itemList, float dt);
 
 private:
 
