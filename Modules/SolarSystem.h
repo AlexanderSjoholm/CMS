@@ -11,7 +11,7 @@
 struct Light
 {
 	cv::Vec3f * position;
-	cv::Vec3b color;
+	cv::Vec3f color;
 	bool isDirectional;
 };
 
