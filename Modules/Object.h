@@ -12,7 +12,6 @@ class Object
 public:
 	
 	Object();
-	//void init(	Model* model, GLuint _program, GLchar* _vertexAttributeName, GLchar* _normalAttributName);
 	void init(	Model* model, GLuint _program, GLchar* _vertexAttributeName, GLchar* _normalAttributName, GLchar* _texCoordAttributeName, GLuint _texture0 = 0, GLuint _texture1 = 0);
 
 	void draw(Player* player);
