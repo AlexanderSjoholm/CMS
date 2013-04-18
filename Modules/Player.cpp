@@ -9,6 +9,7 @@ Player::Player()
 	upVector		= cv::Vec3f(0, 1, 0);
 
 	sensitivity = 0.025f;
+	arrowSensitivity = 0.4f;
 	movementSpeed = 10.0f;
 }
 
@@ -120,7 +121,7 @@ void Player::lookUp(float dt)
 	GLfloat length = (GLfloat)cv::norm(lookAtDirection);
 	cv::Vec3f helpVector = lookAtDirection.cross(upVector);
 
-	lookAtVector = position + cv::normalize(lookAtDirection + sensitivity*upVector)*length;
+	lookAtVector = position + cv::normalize(lookAtDirection + arrowSensitivity*upVector)*length;
 	upVector = cv::normalize(helpVector.cross(lookAtVector - position));
 }
 void Player::lookDown(float dt)
@@ -130,7 +131,7 @@ void Player::lookDown(float dt)
 	GLfloat length = (GLfloat)cv::norm(lookAtDirection);
 	cv::Vec3f helpVector = lookAtDirection.cross(upVector);
 
-	lookAtVector = position + cv::normalize(lookAtDirection - sensitivity*upVector)*length;
+	lookAtVector = position + cv::normalize(lookAtDirection - arrowSensitivity*upVector)*length;
 	upVector = cv::normalize(helpVector.cross(lookAtVector - position));
 }
 void Player::lookLeft(float dt)
@@ -140,7 +141,7 @@ void Player::lookLeft(float dt)
 	GLfloat length = (GLfloat)cv::norm(lookAtDirection);
 	cv::Vec3f helpVector = cv::normalize(lookAtDirection.cross(upVector));
 
-	lookAtVector = position + cv::normalize(lookAtDirection - sensitivity*helpVector)*length;
+	lookAtVector = position + cv::normalize(lookAtDirection - arrowSensitivity*helpVector)*length;
 	upVector = cv::normalize(helpVector.cross(lookAtVector - position));
 }
 void Player::lookRight(float dt)
@@ -150,6 +151,6 @@ void Player::lookRight(float dt)
 	GLfloat length = (GLfloat)cv::norm(lookAtDirection);
 	cv::Vec3f helpVector = cv::normalize(lookAtDirection.cross(upVector));
 
-	lookAtVector = position + cv::normalize(lookAtDirection + sensitivity*helpVector)*length;
+	lookAtVector = position + cv::normalize(lookAtDirection + arrowSensitivity*helpVector)*length;
 	upVector = cv::normalize(helpVector.cross(lookAtVector - position));
 }

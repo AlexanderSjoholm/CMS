@@ -30,7 +30,7 @@ public:
 
 	cv::Vec3f position, lookAtVector, upVector;
 	cv::Mat lookAtMatrix;
-	GLfloat sensitivity, movementSpeed;
+	GLfloat sensitivity, arrowSensitivity, movementSpeed;
 private:
 	
 
