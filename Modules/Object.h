@@ -2,7 +2,8 @@
 
 #ifndef OBJECT_H
 #define OBJECT_H
-#include "opencv\cxcore.hpp"
+
+//#include "opencv\cxcore.hpp"
 #include "Model.h"
 #include "Player.h"
 
@@ -11,7 +12,9 @@ class Object
 public:
 	
 	Object();
-	void init(	Model* model, GLuint _program, GLchar* _vertexAttributeName, GLchar* _normalAttributName);
+	//void init(	Model* model, GLuint _program, GLchar* _vertexAttributeName, GLchar* _normalAttributName);
+	void init(	Model* model, GLuint _program, GLchar* _vertexAttributeName, GLchar* _normalAttributName, GLchar* _texCoordAttributeName, GLuint _texture0 = 0, GLuint _texture1 = 0);
+
 	void draw(Player* player);
 	void update(cv::Vec3f position,		
 				cv::Vec3f scale,	
@@ -37,6 +40,10 @@ public:
 	Model* model;
 	float distance;
 	std::map<float, Object*> satelliteMap;
+
+	GLuint program, texture0, texture1, bumpMap, specularityMap;
+	GLchar *vertexAttributeName, *normalAttributeName, *texCoordAttributeName, *colourAttributeName;
+
 private:
 	void updateMatrices();
 	GLfloat transX, transY, transZ, 

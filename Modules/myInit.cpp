@@ -55,8 +55,8 @@ void shaderInit(GLuint* program, std::string vertexPath, std::string fragmentPat
 	glAttachShader(*program, vertexShader);
 	glAttachShader(*program, fragmentShader);
 
-	glBindAttribLocation(*program, 0, "in_Position");
-	glBindAttribLocation(*program, 1, "in_Color");
+	//glBindAttribLocation(*program, 0, "in_Position");
+	//glBindAttribLocation(*program, 1, "in_Color");
 
 	// Link program. Each shader attached will become executalbes to run shader processor.
 	glLinkProgram(*program);
