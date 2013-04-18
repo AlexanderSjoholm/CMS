@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
+//#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
 #include "Object.h"
 #include "myUtils.h"
 
@@ -10,9 +10,18 @@ Object::Object()
 
 }
 
-void Object::init(	Model* _model, GLuint _program, GLchar* _vertexAttributeName, GLchar* _normalAttributeName)
+void Object::init(	Model* _model, GLuint _program, GLchar* _vertexAttributeName, GLchar* _normalAttributeName, GLchar* _texCoordAttributeName, GLuint _texture0, GLuint _texture1)
 {
 	model = _model;
+
+	program = _program;
+	vertexAttributeName = _vertexAttributeName;
+	normalAttributeName = _normalAttributeName;
+	texCoordAttributeName = _texCoordAttributeName;
+
+	texture0 = _texture0;
+	texture1 = _texture1;
+
 	model->vertexAttributeName = _vertexAttributeName;
 	model->normalAttributeName = _normalAttributeName;
 	model->program = _program;
@@ -39,11 +48,38 @@ void Object::draw(Player* player)
 	
 	player->lookAtUpload(model->program);
 
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// Bind the right textures
+	if (texture0 != 0)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture0);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glUniform1i(glGetUniformLocation(program, "Tex0"), 0);
 
+		if (texture1 != 0)
+		{
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, texture1);
+			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glUniform1i(glGetUniformLocation(program, "Tex1"), 1);
+		}
+	}
+
+	// Bind the model's VAO and buffers to the program specified by the object
 	glBindVertexArray(model->VAO);
-	//glDrawArrays(GL_TRIANGLES, 0, 6);
-	//std::cout << model->numberOfIndices << std::endl;
+	
+	glBindBuffer(GL_ARRAY_BUFFER, model->VBO);
+	glVertexAttribPointer(glGetAttribLocation(program, vertexAttributeName), 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(glGetAttribLocation(program, vertexAttributeName));
+
+	glBindBuffer(GL_ARRAY_BUFFER, model->NBO);
+	glVertexAttribPointer(glGetAttribLocation(program, normalAttributeName), 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(glGetAttribLocation(program, normalAttributeName));
+
+	glBindBuffer(GL_ARRAY_BUFFER, model->TBO);
+	glVertexAttribPointer(glGetAttribLocation(program, texCoordAttributeName), 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(glGetAttribLocation(program, texCoordAttributeName));
+	
 	glDrawElements(GL_TRIANGLES, model->numberOfIndices, GL_UNSIGNED_INT, 0);
 }
 
