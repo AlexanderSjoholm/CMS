@@ -42,6 +42,7 @@ public:
 
 	GLuint program, texture0, texture1, bumpMap, specularityMap;
 	GLchar *vertexAttributeName, *normalAttributeName, *texCoordAttributeName, *colourAttributeName;
+	GLfloat ambientCoeff, diffuseCoeff, specualrCoeff, specualrExponent;
 
 private:
 	void updateMatrices();

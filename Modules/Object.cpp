@@ -38,15 +38,18 @@ void Object::init(	Model* _model, GLuint _program, GLchar* _vertexAttributeName,
 
 void Object::draw(Player* player)
 {
-	glUseProgram(model->program);
+	glUseProgram(program);
 	
-	glUniformMatrix4fv(glGetUniformLocation(model->program, "scaleTrans"), 1, GL_TRUE, scaleTrans.ptr<GLfloat>());
-	glUniformMatrix4fv(glGetUniformLocation(model->program, "rotX"), 1, GL_TRUE, rotX.ptr<GLfloat>());
-	glUniformMatrix4fv(glGetUniformLocation(model->program, "rotY"), 1, GL_TRUE, rotY.ptr<GLfloat>());
-	glUniformMatrix4fv(glGetUniformLocation(model->program, "rotZ"), 1, GL_TRUE, rotZ.ptr<GLfloat>());
-	glUniformMatrix4fv(glGetUniformLocation(model->program, "projectionMatrix"), 1, GL_TRUE, projectionMatrix);
+	// Upload Transformations
+	glUniformMatrix4fv(glGetUniformLocation(program, "scaleTrans"), 1, GL_TRUE, scaleTrans.ptr<GLfloat>());
+	glUniformMatrix4fv(glGetUniformLocation(program, "rotX"), 1, GL_TRUE, rotX.ptr<GLfloat>());
+	glUniformMatrix4fv(glGetUniformLocation(program, "rotY"), 1, GL_TRUE, rotY.ptr<GLfloat>());
+	glUniformMatrix4fv(glGetUniformLocation(program, "rotZ"), 1, GL_TRUE, rotZ.ptr<GLfloat>());
+	glUniformMatrix4fv(glGetUniformLocation(program, "projectionMatrix"), 1, GL_TRUE, projectionMatrix);
 	
-	player->lookAtUpload(model->program);
+	player->lookAtUpload(program);
+
+	glUniformMatrix4fv(glGetUniformLocation(program, "rotZ"), 1, GL_TRUE, rotZ.ptr<GLfloat>());
 
 	// Bind the right textures
 	if (texture0 != 0)
