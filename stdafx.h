@@ -5,6 +5,7 @@
 // Standard includes
 #include <GL\glew.h>
 #include <SFML\Window.hpp>
+#include <SFML\Graphics.hpp>
 #include <SFML\OpenGL.hpp>
 #include <opencv\cv.h>
 #include <opencv\cxcore.h>
