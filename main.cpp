@@ -11,10 +11,10 @@
 #include "Modules/fixModel.h"
 #include "Modules/SolarSystem.h"
 #include "Modules/Physics.h"
-
+#include <iostream>
 // Reference to shader program
 GLuint program, program2, program3;
-float dt;
+float dt = 0;
 SolarSystem solsystem;
 Physics physEngine;
 
@@ -54,13 +54,13 @@ int main()
 	myLoadObj("Models/unitSphere.obj", &bladeModel);
 	blade.init(&bladeModel, program2,  "in_Position", "in_Normal");
 	blade.set(cv::Vec3f(10,0,0), cv::Vec3f(1,1,1), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0));
-	blade.setOrbit(&sphere, 10);
+	//blade.setOrbit(&sphere, 10);
 	bladeModel.upload();
 
 	myLoadObj("Models/unitSphere.obj", &cubeModel);
 	cube.init(&cubeModel, program, "in_Position", "in_Normal");
 	cube.set(cv::Vec3f(13,0,0), cv::Vec3f(0.5,0.5,0.5), cv::Vec3f(0,0,0), cv::Vec3f(0,-10,0));
-	cube.setOrbit(&blade, 3);
+	//cube.setOrbit(&blade, 3);
 	cubeModel.upload();
 	/*
 	cubeModel.init(	
@@ -70,9 +70,16 @@ int main()
 	cube.init(&cubeModel, program, "in_Position", "in_Normal");
 	LoadTGATextureSimple("Textures/maskros512.tga", &texture);
 	*/
+	blade.addSatellite(&cube, 3);
+	sphere.addSatellite(&blade, 10);	
+	solsystem.addStar(&sphere);
+	//std::cout << cube.orbits->position << std::endl;
+
 	solsystem.addPlanet(&cube);
-	solsystem.addPlanet(&blade);	
+	solsystem.addPlanet(&blade);
 	solsystem.addPlanet(&sphere);
+
+	std::string asdf;
 
 
 	// SFML built-in clock
@@ -91,9 +98,10 @@ int main()
 
 		solsystem.draw(player);
 		//sphere.draw(&player);
-		std::cout << cube.position - blade.position << std::endl;
         window.display();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//std::cout << "dt: " << dt << std::endl;
+		//std::cin >> asdf;
 
     }
 

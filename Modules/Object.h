@@ -17,6 +17,7 @@ public:
 				cv::Vec3f scale,	
 				cv::Vec3f rotAngles);	
 	void update(cv::Vec3f dl);
+	void satMapUpdate(cv::Vec3f accMovement, float dt);
 
 	void set(cv::Vec3f position, 
 				cv::Vec3f scale,		
@@ -24,8 +25,9 @@ public:
 				cv::Vec3f velocity);
 	void setPosition(cv::Vec3f _position);
 
+	void addSatellite(Object * object, float distance);
 
-	void setOrbit(Object* orbits, double distance);
+	void setOrbit(Object* orbits, float distance);
 	
 	cv::Vec3f position;
 	cv::Vec3f scale;
@@ -33,7 +35,8 @@ public:
 	cv::Vec3f velocity;
 	Object* orbits;
 	Model* model;
-	double distance;
+	float distance;
+	std::map<float, Object*> satelliteMap;
 private:
 	void updateMatrices();
 	GLfloat transX, transY, transZ, 

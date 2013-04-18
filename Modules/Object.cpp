@@ -1,7 +1,9 @@
 #include "stdafx.h"
-//#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
+#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
 #include "Object.h"
 #include "myUtils.h"
+
+using namespace cv;
 
 Object::Object()
 {
@@ -45,6 +47,13 @@ void Object::draw(Player* player)
 	glDrawElements(GL_TRIANGLES, model->numberOfIndices, GL_UNSIGNED_INT, 0);
 }
 
+void Object::addSatellite(Object * object, float _distance)
+{
+	object->orbits = this;
+	object->distance = _distance;
+	satelliteMap.insert(std::pair<float, Object*>(object->distance, object));
+}
+
 void Object::update(cv::Vec3f _position,
 					cv::Vec3f _scale,		
 					cv::Vec3f _rotAngles)
@@ -56,6 +65,35 @@ void Object::update(cv::Vec3f _position,
 	updateMatrices();
 }
 
+void Object::satMapUpdate(Vec3f _accMovement, float dt)
+{
+	if (orbits)
+	{
+		float speed = norm(velocity);
+		//std::cout << "whyyy " << position - orbits->position << std::endl;
+		Vec3f relPos = normalize(position - orbits->position);
+		//std::cout << "distance " << distance << std::endl;
+		relPos += relPos.cross(normalize(velocity))*dt*speed/distance;
+		normalize(relPos);
+		Vec3f accMovement = (relPos * distance - position + orbits->position) + _accMovement;
+		 
+		update(accMovement);
+			
+		for(std::map<float, Object*>::iterator it = satelliteMap.begin(); it != satelliteMap.end(); ++it)
+		{
+			it->second->satMapUpdate(accMovement, dt);
+		}
+	}
+	else 
+	{
+		for(std::map<float, Object*>::iterator it = satelliteMap.begin(); it != satelliteMap.end(); ++it)
+		{
+			it->second->satMapUpdate(_accMovement, dt);
+		}
+	}
+
+}
+
 void Object::update(cv::Vec3f _dl)
 {
 	position += _dl;
@@ -63,7 +101,7 @@ void Object::update(cv::Vec3f _dl)
 	updateMatrices();
 }
 
-void Object::setOrbit(Object* _orbits, double _distance)
+void Object::setOrbit(Object* _orbits, float _distance)
 {
 	orbits = _orbits;
 	distance = _distance;

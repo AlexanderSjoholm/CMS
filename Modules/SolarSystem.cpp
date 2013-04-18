@@ -7,7 +7,22 @@
 
 void SolarSystem::addPlanet(Object * planet, bool isLightSource, cv::Vec3b color)
 {
-	planetList.push_front(*planet);
+	planetList.push_front(planet);
+	/*
+	//Hax, kommer följa med planeten hela vägen tack vare OpenCVs matrisimplmentation
+	if (isLightSource)
+	{
+		Light tempLight;
+		tempLight.position = &planet->position;
+		tempLight.color = color;
+		lightList.push_front(tempLight);
+	}*/
+	return;
+}
+
+void SolarSystem::addStar(Object * planet, bool isLightSource, cv::Vec3b color)
+{
+	starList.push_front(planet);
 	
 	//Hax, kommer följa med planeten hela vägen tack vare OpenCVs matrisimplmentation
 	if (isLightSource)
@@ -22,7 +37,7 @@ void SolarSystem::addPlanet(Object * planet, bool isLightSource, cv::Vec3b color
 
 void SolarSystem::update(Physics & PhysEngine, float dt)
 {
-	PhysEngine.updatePositions(planetList, itemList, dt);
+	PhysEngine.updatePositions(starList, itemList, dt);
 	return;
 }
 
@@ -30,10 +45,10 @@ void SolarSystem::draw(Player & player)
 {
 	//Draw everything
 	int herp = 0;
-	for (std::list<Object>::iterator it = planetList.begin(); it != planetList.end(); it++)
+	for (std::list<Object*>::iterator it = planetList.begin(); it != planetList.end(); it++)
 	{
 		herp++;
-		it->draw(&player);
+		(*it)->draw(&player);
 		//std::cout << "drawing stuff;  " << herp << std::endl;
 	}
 	return;

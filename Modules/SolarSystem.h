@@ -19,6 +19,7 @@ class SolarSystem
 {
 public:
 	SolarSystem() {};
+	void addStar(Object * planet, bool isLightSource = false, cv::Vec3b color = 0);
 	void addPlanet(Object * planet, bool isLightSource = false, cv::Vec3b color = 0);
 	void update(Physics & PhysicsEngine, float dt);
 	void draw(Player & player);
@@ -26,7 +27,8 @@ public:
 	void addItem(Object * item);
 
 private:
-	std::list<Object> planetList, itemList;
+	std::list<Object*> starList, planetList; 
+	std::list<Object> itemList;
 	std::list<Light> lightList;
 };
 
