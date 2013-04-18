@@ -12,7 +12,10 @@ class Object
 public:
 	
 	Object();
-	void init(	Model* model, GLuint _program, GLchar* _vertexAttributeName, GLchar* _normalAttributName, GLchar* _texCoordAttributeName, GLuint _texture0 = 0, GLuint _texture1 = 0);
+
+	void init(	Model* model, GLuint _program, 
+				cv::Vec4f shaderParameters = cv::Vec4f(0.3f, 0.4f, 0.3f, 10),
+				GLuint _texture0 = 0, GLuint _texture1 = 0);
 
 	void draw(Player* player);
 	void update(cv::Vec3f position,		
@@ -42,8 +45,8 @@ public:
 
 	GLuint program, texture0, texture1, bumpMap, specularityMap;
 	GLchar *vertexAttributeName, *normalAttributeName, *texCoordAttributeName, *colourAttributeName;
-	GLfloat ambientCoeff, diffuseCoeff, specualrCoeff, specualrExponent;
-
+	GLfloat ambientCoeff, diffuseCoeff, specularCoeff;
+	GLuint  specularExponent;
 private:
 	void updateMatrices();
 	GLfloat transX, transY, transZ, 

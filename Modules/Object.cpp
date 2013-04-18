@@ -10,22 +10,29 @@ Object::Object()
 
 }
 
-void Object::init(	Model* _model, GLuint _program, GLchar* _vertexAttributeName, GLchar* _normalAttributeName, GLchar* _texCoordAttributeName, GLuint _texture0, GLuint _texture1)
+void Object::init(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GLuint _texture0, GLuint _texture1)
 {
 	model = _model;
 
 	program = _program;
-	vertexAttributeName = _vertexAttributeName;
-	normalAttributeName = _normalAttributeName;
-	texCoordAttributeName = _texCoordAttributeName;
+	vertexAttributeName = "inPosition";
+	normalAttributeName = "inNormal";
+	texCoordAttributeName = "inTexCoord";
+
+	ambientCoeff = shaderParametes[0];
+	diffuseCoeff = shaderParametes[1];
+	specularCoeff = shaderParametes[2];
+	specularExponent = (GLuint)shaderParametes[3];
+
+	
+	std::cout << ambientCoeff << std::endl;
+	std::cout << diffuseCoeff << std::endl;
+	std::cout << specularCoeff << std::endl;
+	std::cout << specularExponent << std::endl;
 
 	texture0 = _texture0;
 	texture1 = _texture1;
 
-	model->vertexAttributeName = _vertexAttributeName;
-	model->normalAttributeName = _normalAttributeName;
-	model->program = _program;
-	
 	position = cv::Vec3f(0, 0, 0);
 	velocity = cv::Vec3f(0, 0, 0);
 	scale = cv::Vec3f(0, 0, 0);
@@ -54,6 +61,14 @@ void Object::draw(Player* player)
 	
 	player->lookAtUpload(program);
 
+	// Upload shading parameters
+	glUniform1fv(glGetUniformLocation(program, "ambientCoeff"), 1, &ambientCoeff);
+    glUniform1fv(glGetUniformLocation(program, "diffuseCoeff"), 1, &diffuseCoeff);
+    glUniform1fv(glGetUniformLocation(program, "specularCoeff"), 1, &specularCoeff);
+    glUniform1uiv(glGetUniformLocation(program, "specularExponent"), 1, &specularExponent);
+	
+	glUniform3fv(glGetUniformLocation(program, "cameraPosition"), 1, cv::Mat(player->position).ptr<GLfloat>());
+	
 	glUniformMatrix4fv(glGetUniformLocation(program, "rotZ"), 1, GL_TRUE, rotZ.ptr<GLfloat>());
 
 	// Bind the right textures
@@ -113,7 +128,7 @@ void Object::satMapUpdate(Vec3f _accMovement, float dt)
 {
 	if (orbits)
 	{
-		float speed = norm(velocity);
+		float speed = norm	(velocity);
 		//std::cout << "whyyy " << position - orbits->position << std::endl;
 		Vec3f relPos = normalize(position - orbits->position);
 		//std::cout << "distance " << distance << std::endl;
