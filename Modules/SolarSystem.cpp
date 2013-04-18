@@ -36,6 +36,12 @@ void SolarSystem::draw(Player * player)
 		herp++;
 		(*it)->draw(player);
 	}
+	for (std::list<Object*>::iterator it = itemList.begin(); it != itemList.end(); it++)
+	{
+		herp++;
+		(*it)->draw(player);
+		
+	}
 	return;
 }
 
@@ -43,5 +49,6 @@ void SolarSystem::draw(Player * player)
 //TODO
 void SolarSystem::addItem(Object * item)
 {
+	itemList.push_front(item);
 	return;
 }

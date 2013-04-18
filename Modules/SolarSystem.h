@@ -27,7 +27,7 @@ public:
 
 private:
 	std::list<Object*> starList; 
-	std::list<Object> itemList;
+	std::list<Object*> itemList;
 	std::list<Light> lightList;
 };
 

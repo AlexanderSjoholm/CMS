@@ -3,8 +3,10 @@
 #include "stdafx.h"
 //#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
 #include "myUtils.h"
+#include "SolarSystem.h"
 
-void handleEvents(sf::Window* window, bool* running, Player* player, float dt)
+
+void handleEvents(sf::Window* window, bool* running, int* item, Player* player, float dt)
 {
     sf::Event event;
 	//relative mouse movements (brought to you by OpenCV because SFML sucks)
@@ -37,6 +39,13 @@ void handleEvents(sf::Window* window, bool* running, Player* player, float dt)
 				window->create(sf::VideoMode::getDesktopMode(), "OpenGL", sf::Style::Fullscreen, sf::ContextSettings(32));
 			}
 		}
+		else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			*item = 1;
+			std::cout << "leftbuttonreleased" << std::endl;
+		}
+
+		
     }
 
 	dx = sf::Mouse::getPosition(*window).x - window->getSize().x / 2;

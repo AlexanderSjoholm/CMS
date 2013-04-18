@@ -17,6 +17,7 @@ GLuint program, program2, program3, sunProgram;
 float dt = 0;
 SolarSystem solsystem;
 Physics physEngine;
+int item = 0;
 
 int main()
 {
@@ -79,7 +80,7 @@ int main()
     {
 		dt = clock.getElapsedTime().asSeconds();
 		clock.restart();
-		handleEvents(&window, &running, &player, dt);
+		handleEvents(&window, &running, &item, &player, dt);
 		player.lookAtUpdate(dt);
 
 		
@@ -89,8 +90,15 @@ int main()
 
 		window.setActive();
 
-		
-
+		if(item == 1)
+		{
+			Object* newItem = new Object();
+			newItem->init(&sphereModel, program, "inPosition", "inNormal", "inTexCoord", earthTextureDay, earthTextureNight);
+			newItem->set(player.position,  cv::Vec3f(0.25,0.25,0.25), cv::Vec3f(0,0,0), 10*normalize(player.lookAtVector - player.position));
+			solsystem.addItem(newItem);
+			std::cout << 10*normalize(player.position - player.lookAtVector) << std::endl;
+		}
+		item = 0;
 		//cube.draw(&player);
 		solsystem.update(physEngine, dt);
 		solsystem.draw(&player);

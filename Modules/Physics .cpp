@@ -6,7 +6,7 @@
 
 using namespace cv;
 
-void Physics::updatePositions(std::list<Object*>& starList, std::list<Object>& itemList, float dt)
+void Physics::updatePositions(std::list<Object*>& starList, std::list<Object*>& itemList, float dt)
 {
 	for (std::list<Object*>::iterator it = starList.begin(); it != starList.end(); it++)
 	{
@@ -17,9 +17,12 @@ void Physics::updatePositions(std::list<Object*>& starList, std::list<Object>& i
 		}		
 	}
 
-	for (std::list<Object>::iterator it = itemList.begin(); it != itemList.end(); it++)
+	Vec3f dl(0,0,0);
+	for (std::list<Object*>::iterator it = itemList.begin(); it != itemList.end(); it++)
 	{
-
+		dl = (*it)->velocity*dt;
+		(*it)->update(dl);
+		//std::cout << "adkgha" << std::endl;
 	}
 	return;
 }
