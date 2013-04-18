@@ -22,7 +22,7 @@ public:
 				cv::Vec3f scale,	
 				cv::Vec3f rotAngles);	
 	void update(cv::Vec3f dl);
-	void satMapUpdate(cv::Vec3f accMovement, float dt);
+	void satMapUpdate(std::map<float, cv::Vec3f>& massPosList, cv::Vec3f accMovement, float dt);
 
 	void set(cv::Vec3f position, 
 				cv::Vec3f scale,		

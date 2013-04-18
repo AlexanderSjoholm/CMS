@@ -24,12 +24,12 @@ void Object::init(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GL
 	specularCoeff = shaderParametes[2];
 	specularExponent = (GLuint)shaderParametes[3];
 
-	
+	/*
 	std::cout << ambientCoeff << std::endl;
 	std::cout << diffuseCoeff << std::endl;
 	std::cout << specularCoeff << std::endl;
 	std::cout << specularExponent << std::endl;
-
+	*/
 	texture0 = _texture0;
 	texture1 = _texture1;
 	specularityMap = _specularityMap;
@@ -131,32 +131,31 @@ void Object::update(cv::Vec3f _position,
 	updateMatrices();
 }
 
-void Object::satMapUpdate(Vec3f _accMovement, float dt)
+void Object::satMapUpdate(std::map<float, cv::Vec3f>& massPosList, Vec3f _accMovement, float dt)
 {
 	if (orbits)
 	{
 		float speed = norm	(velocity);
-		//std::cout << "whyyy " << position - orbits->position << std::endl;
 		Vec3f relPos = normalize(position - orbits->position);
-		//std::cout << "distance " << distance << std::endl;
 		relPos += relPos.cross(normalize(velocity))*dt*speed/distance;
 		normalize(relPos);
 		Vec3f accMovement = (relPos * distance - position + orbits->position) + _accMovement;
-		 
 		update(accMovement);
-			
+		
 		for(std::map<float, Object*>::iterator it = satelliteMap.begin(); it != satelliteMap.end(); ++it)
 		{
-			it->second->satMapUpdate(accMovement, dt);
+			it->second->satMapUpdate(massPosList, accMovement, dt);
 		}
 	}
 	else 
 	{
 		for(std::map<float, Object*>::iterator it = satelliteMap.begin(); it != satelliteMap.end(); ++it)
 		{
-			it->second->satMapUpdate(_accMovement, dt);
+			it->second->satMapUpdate(massPosList, _accMovement, dt);
 		}
 	}
+	float mass = scale(0) * scale(1) * scale(2);
+	massPosList.emplace(std::pair<float, cv::Vec3f>(mass, position));
 
 }
 
