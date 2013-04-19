@@ -4,6 +4,7 @@
 //#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
 #include "myUtils.h"
 #include "SolarSystem.h"
+#include "LoadTGA2.h"
 
 
 void handleEvents(sf::Window* window, bool* running, int* item, Player* player, float dt)
@@ -106,6 +107,7 @@ GLfloat projectionMatrix[] = {	2.0f*nearFrustum/(right-left), 0.0f,					(right+l
 								0.0f,					2.0f*nearFrustum/(top-bottom),	(top+bottom)/(top-bottom),	0.0f,
 								0.0f,					0.0f,					-((float)farFrustum + (float)nearFrustum)/((float)farFrustum - (float)nearFrustum),	-2.0f*(float)farFrustum*(float)nearFrustum/((float)farFrustum - (float)nearFrustum),
 								0.0f,					0.0f,					-1.0f,						0.0f };
+
 
 void generateSphere(Model* model, int subdivisions)
 {
@@ -233,3 +235,12 @@ void bumpMySphere(Model* model, cv::Mat* bumpMap)
 		//model->vertexArray[i]*scale/200;
 	}
 }
+
+GLuint noiseTexture;
+std::normal_distribution<double> normalDistribution(0, 1);
+std::mt19937 generator;	
+void loadNoise()
+{
+	LoadTGATextureSimple("Textures/noise.tga", &noiseTexture);
+}
+
