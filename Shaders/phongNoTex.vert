@@ -3,12 +3,10 @@
 in vec3 inPosition;
 in vec3 inNormal;
 in vec2 inTexCoord;
-//in vec3 inColor;
 
 out vec3 exNormal;
 out vec3 exPosition;
 out vec2 exTexCoord;
-//out vec3 exColor
 
 uniform mat4 scaleTrans;
 uniform mat4 rotX;
@@ -23,5 +21,4 @@ void main(void)
 	exPosition = vec3(scaleTrans * rotY * rotZ * rotX * vec4(inPosition, 1.0));
 	exNormal = mat3(scaleTrans * rotY * rotZ * rotX) * inNormal;
 	exTexCoord = inTexCoord;
-	//ex_Color = in_Color;
 }
