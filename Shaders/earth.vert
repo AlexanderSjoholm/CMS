@@ -7,6 +7,7 @@ in vec2 inTexCoord;
 out vec3 exNormal;
 out vec3 exPosition;
 out vec2 exTexCoord;
+out mat3 normalTransform;
 
 uniform mat4 scaleTrans;
 uniform mat4 rotX;
@@ -19,6 +20,8 @@ void main(void)
 {
 	gl_Position = projectionMatrix * lookAtMatrix * scaleTrans * rotY * rotZ * rotX * vec4(inPosition, 1.0);
 	exPosition = vec3(scaleTrans * rotY * rotZ * rotX * vec4(inPosition, 1.0));
-	exNormal = mat3(scaleTrans * rotY * rotZ * rotX) * inNormal;
+	normalTransform = mat3(scaleTrans * rotY * rotZ * rotX);
+	exNormal = inNormal;
+	//exNormal = mat3(scaleTrans * rotY * rotZ * rotX) * inNormal;
 	exTexCoord = inTexCoord;
 }
