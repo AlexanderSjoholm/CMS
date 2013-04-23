@@ -10,7 +10,7 @@ Object::Object()
 
 }
 
-void Object::init(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GLuint _texture0, GLuint _texture1, GLuint _specularityMap)
+void Object::init(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GLuint _texture0, GLuint _texture1, GLuint _specularityMap, GLuint _normalMap)
 {
 	model = _model;
 
@@ -24,15 +24,10 @@ void Object::init(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GL
 	specularCoeff = shaderParametes[2];
 	specularExponent = (GLuint)shaderParametes[3];
 
-	/*
-	std::cout << ambientCoeff << std::endl;
-	std::cout << diffuseCoeff << std::endl;
-	std::cout << specularCoeff << std::endl;
-	std::cout << specularExponent << std::endl;
-	*/
 	texture0 = _texture0;
 	texture1 = _texture1;
 	specularityMap = _specularityMap;
+	normalMap = _normalMap;
 
 	position = cv::Vec3f(0, 0, 0);
 	velocity = cv::Vec3f(0, 0, 0);
@@ -52,7 +47,7 @@ void Object::draw(Player* player)
 	}
 	
 	glUseProgram(program);
-	
+
 	// Upload Transformations
 	glUniformMatrix4fv(glGetUniformLocation(program, "scaleTrans"), 1, GL_TRUE, scaleTrans.ptr<GLfloat>());
 	glUniformMatrix4fv(glGetUniformLocation(program, "rotX"), 1, GL_TRUE, rotX.ptr<GLfloat>());
@@ -70,7 +65,9 @@ void Object::draw(Player* player)
 	
 	glUniform3fv(glGetUniformLocation(program, "cameraPosition"), 1, cv::Mat(player->position).ptr<GLfloat>());
 	
-	glUniformMatrix4fv(glGetUniformLocation(program, "rotZ"), 1, GL_TRUE, rotZ.ptr<GLfloat>());
+	//glUniformMatrix4fv(glGetUniformLocation(program, "rotZ"), 1, GL_TRUE, rotZ.ptr<GLfloat>());
+
+	
 
 	// Bind the right textures
 	if (texture0 != 0)
@@ -79,25 +76,56 @@ void Object::draw(Player* player)
 		glBindTexture(GL_TEXTURE_2D, texture0);
 		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glUniform1i(glGetUniformLocation(program, "Tex0"), 0);
-
-		if (texture1 != 0)
-		{
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, texture1);
-			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glUniform1i(glGetUniformLocation(program, "Tex1"), 1);
-		}
+	}
+	
+	if (texture1 != 0)
+	{
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture1);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glUniform1i(glGetUniformLocation(program, "Tex1"), 1);
+	}
+	
+	if (specularityMap != 0)
+	{
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, specularityMap);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glUniform1i(glGetUniformLocation(program, "Tex2"), 2);
 	}
 
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, specularityMap);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glUniform1i(glGetUniformLocation(program, "Tex2"), 2);
-	
+	if (normalMap != 0)
+	{
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, normalMap);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glUniform1i(glGetUniformLocation(program, "Tex3"), 3);
+	}
+
+	if (noiseTexture != 0)
+	{
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, noiseTexture);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glUniform1i(glGetUniformLocation(program, "Tex4"), 4);
+	}
+
+	float randomVector[] = {normalDistribution(generator), normalDistribution(generator), normalDistribution(generator)};
+	glUniform3fv(glGetUniformLocation(program, "noise"), 1, randomVector);
+
+	// Upload lightsource
+
+
+	// Upload PlanetPositions and radius
+	float planetPosition[] = {0, 0, -10};
+	glUniform3fv(glGetUniformLocation(program, "planetPosition"), 1, planetPosition);
+
+	float planetRadius = 2;
+	glUniform1fv(glGetUniformLocation(program, "planetRadius"), 1, &planetRadius);
 
 	// Bind the model's VAO and buffers to the program specified by the object
 	glBindVertexArray(model->VAO);
-	
+
 	glBindBuffer(GL_ARRAY_BUFFER, model->VBO);
 	glVertexAttribPointer(glGetAttribLocation(program, vertexAttributeName), 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(glGetAttribLocation(program, vertexAttributeName));

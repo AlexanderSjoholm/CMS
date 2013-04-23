@@ -15,7 +15,8 @@ public:
 
 	void init(	Model* model, GLuint _program, 
 				cv::Vec4f shaderParameters = cv::Vec4f(0.3f, 0.4f, 0.3f, 10),
-				GLuint _texture0 = 0, GLuint _texture1 = 0, GLuint _specularityMap = 0);
+				GLuint _texture0 = 0, GLuint _texture1 = 0, 
+				GLuint _specularityMap = 0, GLuint _normalMap = 0);
 
 	void draw(Player* player);
 	void update(cv::Vec3f position,		
@@ -43,7 +44,7 @@ public:
 	float distance;
 	std::map<float, Object*> satelliteMap;
 
-	GLuint program, texture0, texture1, bumpMap, specularityMap;
+	GLuint program, texture0, texture1, normalMap, specularityMap;
 	GLchar *vertexAttributeName, *normalAttributeName, *texCoordAttributeName, *colourAttributeName;
 	GLfloat ambientCoeff, diffuseCoeff, specularCoeff;
 	GLuint  specularExponent;
