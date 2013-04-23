@@ -126,7 +126,8 @@ void generateSphere(Model* model, int subdivisions)
 	model->vertexArray.push_back(vertex);
 	model->normalArray.push_back(vertex);
 	texCoord[0] = 0.5;
-	texCoord[1] = 0.975; // TexCoords larger than 0.975 ends up outside texture
+	//texCoord[1] = 0.975; // TexCoords larger than 0.975 ends up outside texture
+	texCoord[1] = 1.0; // TexCoords larger than 0.975 ends up outside texture
 	model->texCoordArray.push_back(texCoord);
 	
 	// Place vertices on sphere
@@ -149,8 +150,11 @@ void generateSphere(Model* model, int subdivisions)
 			model->normalArray.push_back(vertex);
 			
 			// Texture coordinates aref ound through phi and theta
-			texCoord[0] = (1 - (float)j/subdivisions) * 0.975 + 0.001;
-			texCoord[1] = (1 - (float)i/subdivisions) * 0.99;
+			//texCoord[0] = (1 - (float)j/subdivisions) * 0.975 + 0.001;
+			//texCoord[1] = (1 - (float)i/subdivisions) * 0.99;
+
+			texCoord[0] = (1 - (float)j/subdivisions);
+			texCoord[1] = (1 - (float)i/subdivisions);
 
 			model->texCoordArray.push_back(texCoord);
 		}
@@ -230,9 +234,12 @@ void bumpMySphere(Model* model, cv::Mat* bumpMap)
 		int row = floor(v*(height - 1));
 		int col = floor(u*(width - 1));
 		std::cout << "coords: " << row << ", " << col << std::endl;
-		int scale = *bumpMap->row(row).col(col).ptr<int>();
+		float scale = *bumpMap->row(row).col(col).ptr<float>();
 		std::cout << "scale: " << scale << std::endl;
-		//model->vertexArray[i]*scale/200;
+		std::cout << "Before: " << model->vertexArray[i] << std::endl;
+		model->vertexArray[i] = model->vertexArray[i] * (1 + scale/(255 * 5));
+		std::cout << "After: " << model->vertexArray[i] << std::endl;
+		//Sleep(2000);
 	}
 }
 
