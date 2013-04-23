@@ -69,24 +69,28 @@ void Player::moveForward(float dt)
 {
 	std::cout << "W" << std::endl;
 	position += cv::normalize(lookAtVector - position)*movementSpeed*dt;
+	lookAtVector += cv::normalize(lookAtVector - position)*movementSpeed*dt;
 	std::cout << position << std::endl;
 }
 void Player::moveBackward(float dt)
 {
 	std::cout << "S" << std::endl;
 	position -= cv::normalize(lookAtVector - position)*movementSpeed*dt;
+	lookAtVector -= cv::normalize(lookAtVector - position)*movementSpeed*dt;
 	std::cout << position << std::endl;
 }
 void Player::moveLeft(float dt)
 {
 	std::cout << "A" << std::endl;
 	position -= cv::normalize( (lookAtVector - position).cross(upVector) )*movementSpeed*dt;
+	lookAtVector -= cv::normalize( (lookAtVector - position).cross(upVector) )*movementSpeed*dt;
 	std::cout << position << std::endl;
 }
 void Player::moveRight(float dt)
 {
 	std::cout << "D" << std::endl;
 	position += cv::normalize( (lookAtVector - position).cross(upVector) )*movementSpeed*dt;
+	lookAtVector += cv::normalize( (lookAtVector - position).cross(upVector) )*movementSpeed*dt;
 	std::cout << position << std::endl;
 }
 
