@@ -179,6 +179,29 @@ void LoadTGATextureSimple(char *filename, GLuint *tex) // If you really only nee
 	{
 		if(texture.imageData != NULL)
 			free(texture.imageData);
+
+		/*
+		GLuint type = GL_RGBA;		// Set The Default GL Mode To RBGA (32 BPP)
+		int h, w;
+
+		w = 1;
+		while (w < texture.width) w = w << 1;
+		h = 1;
+		while (h < texture.height) h = h << 1;
+
+		// Build A Texture From The Data
+		glGenTextures(1, &texture.texID);			// Generate OpenGL texture IDs
+		glBindTexture(GL_TEXTURE_2D, texture.texID);		// Bind Our Texture
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtered
+		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);	// Linear Filtered
+		if (texture.bpp == 24)						// Was The TGA 24 Bits?
+		{
+			type = GL_RGB;			// If So Set The 'type' To GL_RGB
+		}
+		//glTexImage2D(GL_TEXTURE_2D, 0, type, w, h, 0, type, GL_UNSIGNED_BYTE, texture.imageData);
+		glTexImage2D(GL_TEXTURE_2D, 0, type, w, h, 0, type, GL_UNSIGNED_BYTE, &texture.imageData);
+		*/
+
 		*tex = texture.texID;
 	}
 	else
