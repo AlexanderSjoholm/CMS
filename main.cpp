@@ -54,9 +54,11 @@ int main()
 	Editor editor(modelMap, shaderMap, textureMap, normalMap, presetMap);
 
 	// ---------------------- SKYBOX -------------------------------
+
+	// no work :(
 	shaderInit(&skyboxShader, "Shaders/skybox.vert", "Shaders/skybox.frag");
-	myLoadObj("Models/skyboxCopy.obj", skyboxModel);
-	LoadTGATextureSimple("Textures/sunTexture.tga", &skyboxTexture);
+	myLoadObj("Models/skyboxNew.obj", skyboxModel);
+	LoadTGATextureSimple("Textures/spaceBox1.tga", &skyboxTexture);
 	
 	
 	GLInit();
