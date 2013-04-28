@@ -378,8 +378,10 @@ void Editor::printHelp()
 
 void Editor::printWelcome()
 {
-	cout <<  "  Welcome to CMS, to start with default Solar System, type \"default\",\n"
-		 <<	 "  to enter the editor from within the simulator press the \"E\"-key \n";
+	cout <<  "  \n\n"
+		 <<  "  Welcome to CMS, to start with default Solar System, type \"START\",\n"
+		 <<	 "  to enter the editor from within the simulator press the \"E\"-key \n"
+		 <<  "  to select a planet for editing, right klick it.";
 }
 
 void Editor::printTextures()
