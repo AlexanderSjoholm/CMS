@@ -16,10 +16,10 @@ public:
 
 private:
 	cv::Vec3f updateVelocities(std::list<Object*>& itemList,  cv::Vec3f position, float dt);
-	
-	std::map<float, cv::Vec3f> massPosList;
+	void detectCollisions(std::list<Object*>& itemList, Object* object);
+	std::list<Object*> massPosList;
 
-	static const int gravity = 10;
+	static const int gravity = 30;
 };
 
 #endif

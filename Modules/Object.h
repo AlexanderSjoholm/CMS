@@ -12,6 +12,10 @@ class Object
 public:
 	
 	Object();
+	Object(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GLuint _texture0, GLuint _texture1, GLuint _specularityMap, GLuint _normalMap);
+	~Object();
+
+	Object* clone();
 
 	void init(	Model* model, GLuint _program, 
 				cv::Vec4f shaderParameters = cv::Vec4f(0.3f, 0.4f, 0.3f, 10),
@@ -23,15 +27,17 @@ public:
 				cv::Vec3f scale,	
 				cv::Vec3f rotAngles);	
 	void update(cv::Vec3f dl);
-	void satMapUpdate(std::map<float, cv::Vec3f>& massPosList, cv::Vec3f accMovement, float dt);
+	void satMapUpdate(std::list<Object*>& massPosList, cv::Vec3f accMovement, float dt);
 
 	void set(cv::Vec3f position, 
 				cv::Vec3f scale,		
 				cv::Vec3f rotAngles,	
-				cv::Vec3f velocity);
+				cv::Vec3f velocity,
+				float density);
 	void setPosition(cv::Vec3f _position);
 
 	void addSatellite(Object * object, float distance);
+	void getSatellites(std::list<Object*>* objectList);
 
 	void setOrbit(Object* orbits, float distance);
 	
@@ -39,9 +45,11 @@ public:
 	cv::Vec3f scale;
 	cv::Vec3f rotAngles;
 	cv::Vec3f velocity;
+	cv::Vec4f color;
 	Object* orbits;
 	Model* model;
 	float distance;
+	float mass;
 	std::map<float, Object*> satelliteMap;
 
 	GLuint program, texture0, texture1, normalMap, specularityMap;

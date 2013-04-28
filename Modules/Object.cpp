@@ -10,6 +10,51 @@ Object::Object()
 
 }
 
+Object::Object(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GLuint _texture0, GLuint _texture1, GLuint _specularityMap, GLuint _normalMap)
+{
+	model = _model;
+
+	program = _program;
+	vertexAttributeName = "inPosition";
+	normalAttributeName = "inNormal";
+	texCoordAttributeName = "inTexCoord";
+
+	ambientCoeff = shaderParametes[0];
+	diffuseCoeff = shaderParametes[1];
+	specularCoeff = shaderParametes[2];
+	specularExponent = (GLuint)shaderParametes[3];
+
+	texture0 = _texture0;
+	texture1 = _texture1;
+	specularityMap = _specularityMap;
+	normalMap = _normalMap;
+
+	position = cv::Vec3f(0, 0, 0);
+	velocity = cv::Vec3f(0, 0, 0);
+	scale = cv::Vec3f(0, 0, 0);
+	rotAngles = cv::Vec3f(0, 0, 0);
+	orbits = NULL;
+	distance = 0;
+	mass = 0;
+
+	set(position, scale, rotAngles, velocity, 0);
+}
+
+Object::~Object()
+{
+	for(std::map<float, Object*>::iterator it = satelliteMap.begin(); it != satelliteMap.end(); ++it)
+	{
+		delete it->second;
+	}
+}
+
+Object* Object::clone()
+{
+	Object* temp = new Object(model, program, cv::Vec4f(ambientCoeff, diffuseCoeff, specularCoeff, (GLfloat)specularExponent), texture0, texture1, normalMap, specularityMap);
+	return temp;
+}
+
+
 void Object::init(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GLuint _texture0, GLuint _texture1, GLuint _specularityMap, GLuint _normalMap)
 {
 	model = _model;
@@ -35,8 +80,9 @@ void Object::init(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GL
 	rotAngles = cv::Vec3f(0, 0, 0);
 	orbits = NULL;
 	distance = 0;
+	mass = 0;
 
-	set(position, scale, rotAngles, velocity);
+	set(position, scale, rotAngles, velocity, 0);
 }
 
 void Object::draw(Player* player)
@@ -143,9 +189,40 @@ void Object::draw(Player* player)
 
 void Object::addSatellite(Object * object, float _distance)
 {
+	if(orbits)
+	{
+		Vec3f temp = cv::normalize(this->orbits->position - position);
+		temp = temp.cross(object->velocity);
+		if (norm(temp.cross(object->velocity)) != 0)
+		{
+			object->setPosition(normalize(temp.cross(object->velocity))*_distance + this->position);
+		}
+		else
+		{	
+			object->setPosition(normalize(temp.cross(object->velocity + Vec3f(0.00001,0,0)))*_distance + this->position);
+		}
+	}
+	else 
+	{
+		object->setPosition(normalize(object->position.cross(object->velocity))*_distance + this->position);
+	}
 	object->orbits = this;
 	object->distance = _distance;
 	satelliteMap.insert(std::pair<float, Object*>(object->distance, object));
+}
+
+void Object::getSatellites(std::list<Object*>* objectList)
+{
+	if (satelliteMap.empty())
+		objectList->push_front(this);
+	else
+	{
+		for(std::map<float, Object*>::iterator it = satelliteMap.begin(); it != satelliteMap.end(); ++it)
+			{
+				it->second->getSatellites(objectList);
+				objectList->push_front(this);
+			}
+	}
 }
 
 void Object::update(cv::Vec3f _position,
@@ -159,7 +236,7 @@ void Object::update(cv::Vec3f _position,
 	updateMatrices();
 }
 
-void Object::satMapUpdate(std::map<float, cv::Vec3f>& massPosList, Vec3f _accMovement, float dt)
+void Object::satMapUpdate(std::list<Object*>& massPosList, Vec3f _accMovement, float dt)
 {
 	if (orbits)
 	{
@@ -182,8 +259,7 @@ void Object::satMapUpdate(std::map<float, cv::Vec3f>& massPosList, Vec3f _accMov
 			it->second->satMapUpdate(massPosList, _accMovement, dt);
 		}
 	}
-	float mass = scale(0) * scale(1) * scale(2);
-	massPosList.emplace(std::pair<float, cv::Vec3f>(mass, position));
+	massPosList.push_front(this);
 
 }
 
@@ -209,12 +285,14 @@ void Object::setPosition(cv::Vec3f _position)
 void Object::set(cv::Vec3f _position,	
 				 cv::Vec3f _scale,	
 				 cv::Vec3f _rotAngles,
-				 cv::Vec3f _velocity)
+				 cv::Vec3f _velocity,
+				 float density)
 {
 	position = _position;
 	scale = _scale;
 	rotAngles = _rotAngles;
 	velocity = _velocity;
+	mass = density*_scale(0)*_scale(1)*_scale(2);
 	
 	updateMatrices();
 }

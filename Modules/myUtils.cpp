@@ -7,7 +7,7 @@
 #include "LoadTGA2.h"
 
 
-void handleEvents(sf::Window* window, bool* running, int* item, Player* player, float dt)
+void handleEvents(sf::Window* window, bool* running, bool* editor, bool* selectObject, int* item, Player* player, float dt)
 {
     sf::Event event;
 	//relative mouse movements (brought to you by OpenCV because SFML sucks)
@@ -33,6 +33,9 @@ void handleEvents(sf::Window* window, bool* running, int* item, Player* player, 
 		{
 			if (event.key.code == sf::Keyboard::Escape)
 				*running = false;
+
+			if (event.key.code == sf::Keyboard::E)
+				*editor = true;
 			
 			if (event.key.code == sf::Keyboard::F11)
 			{
@@ -44,6 +47,12 @@ void handleEvents(sf::Window* window, bool* running, int* item, Player* player, 
 		{
 			*item = 1;
 			std::cout << "leftbuttonreleased" << std::endl;
+		}
+		else if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+		{
+			*editor = true;
+			*selectObject = true;
+			std::cout << "right button pressed" << std::endl;
 		}
 
 		
@@ -98,7 +107,7 @@ void handleEvents(sf::Window* window, bool* running, int* item, Player* player, 
 // The rotation matrices will be changed for animation
 // Perspective
 #define nearFrustum 1.0
-#define farFrustum 100.0
+#define farFrustum 500.0
 #define right 1.0
 #define left -1.0
 #define top 1.0
@@ -107,6 +116,9 @@ GLfloat projectionMatrix[] = {	2.0f*nearFrustum/(right-left), 0.0f,					(right+l
 								0.0f,					2.0f*nearFrustum/(top-bottom),	(top+bottom)/(top-bottom),	0.0f,
 								0.0f,					0.0f,					-((float)farFrustum + (float)nearFrustum)/((float)farFrustum - (float)nearFrustum),	-2.0f*(float)farFrustum*(float)nearFrustum/((float)farFrustum - (float)nearFrustum),
 								0.0f,					0.0f,					-1.0f,						0.0f };
+
+
+
 
 
 void generateSphere(Model* model, int subdivisions)
@@ -243,6 +255,61 @@ void bumpMySphere(Model* model, cv::Mat* bumpMap)
 	}
 }
 
+void drawSkybox(Player* player, Model* model, GLuint program, GLuint texture)
+{
+	glDisable(GL_DEPTH_TEST);
+	glUseProgram(program);
+
+	// Upload Transformations
+	glUniformMatrix4fv(glGetUniformLocation(program, "lookAtMatrix"), 1, GL_TRUE, player->lookAtMatrix.ptr<GLfloat>());
+	//glUniformMatrix4fv(glGetUniformLocation(program, "rotX"), 1, GL_TRUE, rotX.ptr<GLfloat>());
+	//glUniformMatrix4fv(glGetUniformLocation(program, "rotY"), 1, GL_TRUE, rotY.ptr<GLfloat>());
+	//glUniformMatrix4fv(glGetUniformLocation(program, "rotZ"), 1, GL_TRUE, rotZ.ptr<GLfloat>());
+	glUniformMatrix4fv(glGetUniformLocation(program, "projectionMatrix"), 1, GL_TRUE, projectionMatrix);
+	
+	player->lookAtUpload(program);
+	// Upload shading parameters
+	//glUniform1fv(glGetUniformLocation(program, "ambientCoeff"), 1, &ambientCoeff);
+    //glUniform1fv(glGetUniformLocation(program, "diffuseCoeff"), 1, &diffuseCoeff);
+    //glUniform1fv(glGetUniformLocation(program, "specularCoeff"), 1, &specularCoeff);
+    //glUniform1uiv(glGetUniformLocation(program, "specularExponent"), 1, &specularExponent);
+	
+	glUniform3fv(glGetUniformLocation(program, "inColor"), 1, cv::Mat(cv::Vec3f(1,1,1)).ptr<GLfloat>());
+	
+	
+	//glUniformMatrix4fv(glGetUniformLocation(program, "rotZ"), 1, GL_TRUE, rotZ.ptr<GLfloat>());
+
+	
+
+	// Bind the right textures
+	if (texture != 0)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glUniform1i(glGetUniformLocation(program, "Tex0"), 0);
+	}
+
+	// Bind the model's VAO and buffers to the program specified by the object
+	glBindVertexArray(model->VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, model->VBO);
+	glVertexAttribPointer(glGetAttribLocation(program, "inPosition"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(glGetAttribLocation(program, "inPosition"));
+
+	glBindBuffer(GL_ARRAY_BUFFER, model->NBO);
+	glVertexAttribPointer(glGetAttribLocation(program, "inNormal"), 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(glGetAttribLocation(program, "inNormal"));
+
+	glBindBuffer(GL_ARRAY_BUFFER, model->TBO);
+	glVertexAttribPointer(glGetAttribLocation(program, "inTexCoord"), 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(glGetAttribLocation(program, "inTexCoord"));
+	
+	glDrawElements(GL_TRIANGLES, model->numberOfIndices, GL_UNSIGNED_INT, 0);
+	glEnable(GL_DEPTH_TEST);
+}
+
+
 GLuint noiseTexture;
 std::normal_distribution<double> normalDistribution(0, 1);
 std::mt19937 generator;	
@@ -251,3 +318,59 @@ void loadNoise()
 	LoadTGATextureSimple("Textures/noise.tga", &noiseTexture);
 }
 
+Object* getSelectedObject(std::list<Object*>* allObjects, Player* player)
+{
+	if(!allObjects || allObjects->empty())
+		return NULL;
+	float a,b,c,d,e,f; 
+	float minDistance = 999999999999;
+	Object* closestObject;
+	cv::Vec3f objectPosition;
+	cv::Vec4f distanceVector;
+	cv::Vec4f playerPosition(player->position[0], player->position[1], player->position[2], 1);
+	cv::Vec4f lookAt(player->lookAtVector[0], player->lookAtVector[1], player->lookAtVector[2], 1);
+	cv::Matx<float,4,4> plueckerCoords = playerPosition*lookAt.t() - lookAt*playerPosition.t();
+	a = plueckerCoords(0,1);
+	b = plueckerCoords(0,2);
+	c = plueckerCoords(0,3);
+	d = plueckerCoords(1,2);
+	e = plueckerCoords(1,3);
+	f = plueckerCoords(2,3);
+
+	cv::Matx<float,4,4> dualPlueckerCoords(0, f, -e, d,
+										   -f, 0, c, -b,
+										   e, -c, 0, a,
+										   -d, b, -a, 0);
+
+	cv::Matx<float,3,3> A(0, f, -e,
+						  -f, 0, c,
+						  e, -c, 0);
+
+	A = A.t()*A;
+
+	dualPlueckerCoords = sqrt(2)/(A(0,0)*A(1,1)*A(2,2))*dualPlueckerCoords;
+	
+	
+	for(std::list<Object*>::iterator it = allObjects->begin(); it != allObjects->end(); ++it)
+	{
+		objectPosition = (*it)->position;
+		distanceVector = dualPlueckerCoords*cv::Vec4f(objectPosition(0), objectPosition(1), objectPosition(2), 1);
+		std::cout << "vectorNorm" << cv::norm(cv::Vec3f(distanceVector(0),distanceVector(1),distanceVector(2))) << std::endl;
+		if (minDistance > cv::norm(cv::Vec3f(distanceVector(0),distanceVector(1),distanceVector(2))))
+		{
+			minDistance = cv::norm(cv::Vec3f(distanceVector(0),distanceVector(1),distanceVector(2)));
+			closestObject = (*it);
+		}
+
+	}
+	std::cout << "plueckerCoords: " << plueckerCoords << std::endl;
+	std::cout << "dualPlueckerCoords: " << dualPlueckerCoords << std::endl;
+	std::cout << "plueckerCoords: " << a << "  " << b << "  " << c << "  " << d << "  " << e << "  " << f << std::endl;
+	std::cout << "Minimum distance " << minDistance << std::endl;
+	
+	return closestObject;
+
+	
+	return NULL;
+		
+}

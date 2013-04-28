@@ -23,10 +23,10 @@ public:
 	void lookLeft(float dt);
 	void lookRight(float dt);
 
-
 	void xLook(float dt, int dx);
 	void yLook(float dt, int dy);
 
+	cv::Vec3f getLookAtDirection() {return normalize(lookAtVector - position);};
 
 	cv::Vec3f position, lookAtVector, upVector;
 	cv::Mat lookAtMatrix;

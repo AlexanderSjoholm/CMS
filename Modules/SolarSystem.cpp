@@ -27,28 +27,40 @@ void SolarSystem::update(Physics & PhysEngine, float dt)
 	return;
 }
 
-void SolarSystem::draw(Player * player)
+void SolarSystem::getObjects(std::list<Object*>* objectList)
 {
-	//Draw everything
-	int herp = 0;
-	for (std::list<Object*>::iterator it = starList.begin(); it != starList.end(); it++)
+	if(starList.empty())
+		return;
+	for(std::list<Object*>::iterator it = starList.begin(); it != starList.end(); it++)
 	{
-		herp++;
-		(*it)->draw(player);
-	}
-	for (std::list<Object*>::iterator it = itemList.begin(); it != itemList.end(); it++)
-	{
-		herp++;
-		(*it)->draw(player);
-		
+		(*it)->getSatellites(objectList);
 	}
 	return;
 }
 
+void SolarSystem::draw(Player * player)
+{
+	//Draw everything
+	if (starList.empty())
+		return;
+	for (std::list<Object*>::iterator it = starList.begin(); it != starList.end(); it++)
+	{
+		(*it)->draw(player);
+	}
+	for (std::list<Object*>::iterator it = itemList.begin(); it != itemList.end(); it++)
+	{
+		(*it)->draw(player);
+	}
+	return;
+}
 
-//TODO
 void SolarSystem::addItem(Object * item)
 {
 	itemList.push_front(item);
 	return;
+}
+
+void SolarSystem::deleteItems()
+{
+	itemList.clear();
 }
