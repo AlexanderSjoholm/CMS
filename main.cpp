@@ -80,7 +80,7 @@ int main()
 
 	Object skybox;
 	GLuint skyboxTexture, skyboxShader;
-	LoadTGATextureSimple("Textures/spaceBox.tga", &skyboxTexture);
+	LoadTGATextureSimple("Textures/spaceBox4.tga", &skyboxTexture);
 
 	shaderInit(&skyboxShader, "Shaders/skybox.vert", "Shaders/skybox.frag");
 
@@ -88,6 +88,14 @@ int main()
 	skybox.set(player.position,  cv::Vec3f(1,1,1), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
 	std::cout << "cv::vec3:	  " << cv::Vec3f(5,5,5) << std::endl;
 	std::cout << "Player Pos: " << player.position << std::endl;
+
+	// ---------------------- SKYSPHERE -------------------------------
+	Object skysphere;
+	GLuint skysphereTexture;
+	LoadTGATextureSimple("Textures/spaceBox6.tga", &skysphereTexture);
+
+	skysphere.init(&sphereModel, skyboxShader, standardShaderParameters, skysphereTexture);
+	skysphere.set(player.position,  cv::Vec3f(1,1,1), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
 	
 
 
@@ -133,8 +141,11 @@ int main()
 		//drawSkybox(&player, &skyboxModel, skyboxShader, skyboxTexture);
 
 		glDisable(GL_DEPTH_TEST);
-		skybox.set(player.position,  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
-		skybox.draw(&player);
+		//skybox.set(player.position,  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
+		//skybox.draw(&player);
+
+		skysphere.set(player.position,  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
+		skysphere.draw(&player);
 		glEnable(GL_DEPTH_TEST);
 
 		
