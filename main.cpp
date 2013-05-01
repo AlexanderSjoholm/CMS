@@ -26,20 +26,20 @@ std::map<std::string, Object*> presetMap;
 std::list<Object*> allObjects;
 
 float dt = 0;
-GLuint skyboxShader, skyboxTexture;
+//GLuint skyboxShader, skyboxTexture;
 
 
 SolarSystem solsystem;
 Physics physEngine;
 std::string derp;
-Model* skyboxModel = new Model;
+//Model* skyboxModel = new Model;
 
 
 int main()
 {
 	
 	// SFML window that will host our OpenGL magic
-    sf::Window window(sf::VideoMode(1920, 1080), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
+    sf::Window window(sf::VideoMode(1920, 1080), "OpenGL", sf::Style::Fullscreen, sf::ContextSettings(32));
     window.setVerticalSyncEnabled(true);
 	window.setMouseCursorVisible(false);
 	sf::View view;
@@ -47,20 +47,12 @@ int main()
 	sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2),  window);
 	
 	glewInit();
-
+	
 	Player	player;
 	programInit(shaderMap, modelMap, textureMap, normalMap);
 	initPresetSystem(shaderMap, modelMap, textureMap, normalMap, presetMap);
 	Editor editor(modelMap, shaderMap, textureMap, normalMap, presetMap);
 
-	// ---------------------- SKYBOX -------------------------------
-
-	// no work :(
-	shaderInit(&skyboxShader, "Shaders/skybox.vert", "Shaders/skybox.frag");
-	myLoadObj("Models/skyboxNew.obj", skyboxModel);
-	LoadTGATextureSimple("Textures/spaceBox1.tga", &skyboxTexture);
-	
-	
 	GLInit();
 	
 	// ---------------------- MODELS -------------------------------
@@ -82,6 +74,21 @@ int main()
 	// ShaderParameters = (ambientCoeff, diffuseCoeff, specularCoeff, specularExponent)
 	cv::Vec4f standardShaderParameters(0.2f, 0.5f, 0.8f, 10);
 		
+	// ---------------------- SKYBOX -------------------------------
+	Model skyboxModel;	
+	myLoadObj("Models/myUnitCube.obj", &skyboxModel);				skyboxModel.upload();
+
+	Object skybox;
+	GLuint skyboxTexture, skyboxShader;
+	LoadTGATextureSimple("Textures/spaceBox.tga", &skyboxTexture);
+
+	shaderInit(&skyboxShader, "Shaders/skybox.vert", "Shaders/skybox.frag");
+
+	skybox.init(&skyboxModel, skyboxShader, standardShaderParameters, skyboxTexture);
+	skybox.set(player.position,  cv::Vec3f(1,1,1), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
+	std::cout << "cv::vec3:	  " << cv::Vec3f(5,5,5) << std::endl;
+	std::cout << "Player Pos: " << player.position << std::endl;
+	
 
 
 	int item;
@@ -123,8 +130,12 @@ int main()
 
 			/////////////////////////////////   SKYBOX   /////////////////////////////////////////
 		window.setActive();
-		drawSkybox(&player, skyboxModel, skyboxShader, skyboxTexture);
+		//drawSkybox(&player, &skyboxModel, skyboxShader, skyboxTexture);
 
+		glDisable(GL_DEPTH_TEST);
+		skybox.set(player.position,  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
+		skybox.draw(&player);
+		glEnable(GL_DEPTH_TEST);
 
 		
 
@@ -147,6 +158,7 @@ int main()
     }
     // release resources...
 	glDeleteVertexArrays(1, &sphereModel.VAO);
+	glDeleteVertexArrays(1, &skyboxModel.VAO);
 	//glDeleteVertexArrays(1, &unitSquareModel.VAO);
 	//glDeleteVertexArrays(1, &groundModel.VAO);
 	
