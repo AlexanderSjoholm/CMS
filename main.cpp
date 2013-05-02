@@ -107,6 +107,7 @@ int main()
     bool runningEditor = true;
 	bool startup = true;
 	bool selectObject = false;
+	bool cooldown = false;
 	Object* currentObject = NULL;
 	
 
@@ -133,7 +134,7 @@ int main()
 		clock.restart();
 		runningEditor = false;
 
-		handleEvents(&window, &running, &runningEditor, &selectObject, &item, &player, dt);
+		handleEvents(&window, &running, &runningEditor, &selectObject, &cooldown, &item, &player, dt);
 		player.lookAtUpdate(dt);
 
 			/////////////////////////////////   SKYBOX   /////////////////////////////////////////
@@ -150,13 +151,14 @@ int main()
 
 		
 
-		if(item == 1)
+		if(item == 1 && !cooldown)
 		{
 
 			Object* newItem = presetMap["Earth"]->clone();
 			newItem->set(player.position,  cv::Vec3f(0.25,0.25,0.25), cv::Vec3f(0,0,0), 10*normalize(player.lookAtVector - player.position), 1);
 			solsystem.addItem(newItem);
 			std::cout << 10*normalize(player.position - player.lookAtVector) << std::endl;
+			cooldown = true;
 		}
 		item = 0;
 		

@@ -435,7 +435,7 @@ void Editor::initDefaultSystem(SolarSystem& solsystem)
 	Object* neptune = presetMap["Neptune"]->clone();
 	Object* pluto = presetMap["Pluto"]->clone();
 	
-	sun->set(cv::Vec3f(0,0,0),  cv::Vec3f(10,10,10), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
+	sun->set(cv::Vec3f(0,0,0),  cv::Vec3f(10,10,10), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 0);
 	earth->set(cv::Vec3f(0,0,32),  cv::Vec3f(2,2,2), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0), 1);
 	moon->set(cv::Vec3f(0,0,27),  cv::Vec3f(0.75,0.75,0.75), cv::Vec3f(0,0,0), cv::Vec3f(0,-10,0), 1);
 	mercury->set(cv::Vec3f(0,0,15),  cv::Vec3f(1,1,1), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0), 1);

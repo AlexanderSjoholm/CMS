@@ -7,7 +7,7 @@
 #include "LoadTGA2.h"
 
 
-void handleEvents(sf::Window* window, bool* running, bool* editor, bool* selectObject, int* item, Player* player, float dt)
+void handleEvents(sf::Window* window, bool* running, bool* editor, bool* selectObject, bool* cooldown, int* item, Player* player, float dt)
 {
     sf::Event event;
 	//relative mouse movements (brought to you by OpenCV because SFML sucks)
@@ -41,6 +41,10 @@ void handleEvents(sf::Window* window, bool* running, bool* editor, bool* selectO
 			{
 				window->close();
 				window->create(sf::VideoMode::getDesktopMode(), "OpenGL", sf::Style::Fullscreen, sf::ContextSettings(32));
+			}
+			if (event.MouseButtonReleased)
+			{
+				*cooldown = false;
 			}
 		}
 		else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))

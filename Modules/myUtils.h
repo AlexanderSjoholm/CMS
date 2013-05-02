@@ -5,7 +5,7 @@
 #include "Model.h"
 #include <random>
 
-void handleEvents(sf::Window* window, bool* running, bool* editor, bool* selectObject, int* item, Player* player, float dt);
+void handleEvents(sf::Window* window, bool* running, bool* editor, bool* selectObject, bool* cooldown, int* item, Player* player, float dt);
 void generateSphere(Model* model, int subdivisions);
 void bumpMySphere(Model* model, cv::Mat* bumpMap);
 void drawSkybox(Player *player, Model* model, GLuint program, GLuint texture);
