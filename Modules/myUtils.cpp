@@ -42,11 +42,11 @@ void handleEvents(sf::Window* window, bool* running, bool* editor, bool* selectO
 				window->close();
 				window->create(sf::VideoMode::getDesktopMode(), "OpenGL", sf::Style::Fullscreen, sf::ContextSettings(32));
 			}
-			if (event.MouseButtonReleased)
-			{
-				*cooldown = false;
-			}
 		}
+		else if (event.type == sf::Event::MouseButtonReleased)
+				{
+					*cooldown = false;
+				}
 		else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			*item = 1;

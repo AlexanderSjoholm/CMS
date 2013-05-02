@@ -151,7 +151,7 @@ int main()
 
 		
 
-		if(item == 1 && !cooldown)
+		if(!cooldown && item == 1)
 		{
 
 			Object* newItem = presetMap["Earth"]->clone();
