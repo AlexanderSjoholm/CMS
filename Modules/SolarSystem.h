@@ -24,6 +24,8 @@ public:
 	void draw(Player * player);
 	//void addStaticLight(cv::Vec3b color);
 	void addItem(Object * item);
+	void addPlayerItem(Object * item);
+	void removePlayerItem();
 	void deleteItems();
 	void getObjects(std::list<Object*>* allObjects);
 	

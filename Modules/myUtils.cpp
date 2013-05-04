@@ -7,7 +7,9 @@
 #include "LoadTGA2.h"
 
 
-void handleEvents(sf::Window* window, bool* running, bool* editor, bool* selectObject, bool* cooldown, int* item, Player* player, float dt)
+
+
+void handleEvents(sf::Window* window, std::vector<bool>& states, int* item, Object* playerObject, Player* player, float dt)
 {
     sf::Event event;
 	//relative mouse movements (brought to you by OpenCV because SFML sucks)
@@ -22,7 +24,7 @@ void handleEvents(sf::Window* window, bool* running, bool* editor, bool* selectO
         if (event.type == (sf::Event::Closed))
         {
             // end the program
-            *running = false;
+            states[RUNNING] = false;
         }
         else if (event.type == sf::Event::Resized)
         {
@@ -32,11 +34,17 @@ void handleEvents(sf::Window* window, bool* running, bool* editor, bool* selectO
 		else if (event.type == sf::Event::KeyPressed)
 		{
 			if (event.key.code == sf::Keyboard::Escape)
-				*running = false;
+				states[RUNNING] = false;
 
 			if (event.key.code == sf::Keyboard::E)
-				*editor = true;
-			
+				states[EDITOR] = true;
+
+			if (event.key.code == sf::Keyboard::G && !playerObject)
+				states[ENABLEGRAVITY] = true;
+
+			if (event.key.code == sf::Keyboard::F && playerObject)
+				states[DISABLEGRAVITY] = true;
+
 			if (event.key.code == sf::Keyboard::F11)
 			{
 				window->close();
@@ -45,7 +53,7 @@ void handleEvents(sf::Window* window, bool* running, bool* editor, bool* selectO
 		}
 		else if (event.type == sf::Event::MouseButtonReleased)
 				{
-					*cooldown = false;
+					states[COOLDOWN] = false;
 				}
 		else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
@@ -54,8 +62,8 @@ void handleEvents(sf::Window* window, bool* running, bool* editor, bool* selectO
 		}
 		else if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
 		{
-			*editor = true;
-			*selectObject = true;
+			states[EDITOR] = true;
+			states[SELECTOBJECT] = true;
 			std::cout << "right button pressed" << std::endl;
 		}
 
@@ -110,7 +118,7 @@ void handleEvents(sf::Window* window, bool* running, bool* editor, bool* selectO
 
 // The rotation matrices will be changed for animation
 // Perspective
-#define nearFrustum 1.0
+#define nearFrustum 2.0
 #define farFrustum 500.0
 #define right 1.0
 #define left -1.0

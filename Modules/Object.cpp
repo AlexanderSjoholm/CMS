@@ -236,7 +236,7 @@ void Object::update(cv::Vec3f _position,
 	updateMatrices();
 }
 
-void Object::satMapUpdate(std::list<Object*>& massPosList, Vec3f _accMovement, float dt)
+void Object::satMapUpdate(std::list<Object*>& allPlanets, Vec3f _accMovement, float dt)
 {
 	if (orbits)
 	{
@@ -249,17 +249,17 @@ void Object::satMapUpdate(std::list<Object*>& massPosList, Vec3f _accMovement, f
 		
 		for(std::map<float, Object*>::iterator it = satelliteMap.begin(); it != satelliteMap.end(); ++it)
 		{
-			it->second->satMapUpdate(massPosList, accMovement, dt);
+			it->second->satMapUpdate(allPlanets, accMovement, dt);
 		}
 	}
 	else 
 	{
 		for(std::map<float, Object*>::iterator it = satelliteMap.begin(); it != satelliteMap.end(); ++it)
 		{
-			it->second->satMapUpdate(massPosList, _accMovement, dt);
+			it->second->satMapUpdate(allPlanets, _accMovement, dt);
 		}
 	}
-	massPosList.push_front(this);
+	allPlanets.push_front(this);
 
 }
 

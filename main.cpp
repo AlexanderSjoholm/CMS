@@ -15,6 +15,9 @@
 #include <random>
 #include <iostream>
 
+
+//enum ProgramState;
+
 // Reference to shader program
 GLuint program, program2, program3, sunShader, earthShader, phongNoTex, phongTex;
 std::map<std::string, Model*> modelMap;
@@ -22,6 +25,10 @@ std::map<std::string, GLuint> shaderMap;
 std::map<std::string, GLuint> textureMap;
 std::map<std::string, GLuint> normalMap;
 std::map<std::string, Object*> presetMap;
+std::vector<bool> states(8,false);
+
+//std::vector<bool> states;
+
 
 std::list<Object*> allObjects;
 
@@ -103,72 +110,103 @@ int main()
 
 	// SFML built-in clock
 	sf::Clock clock;
+	states[RUNNING] = true;
+    states[EDITOR] = true;
+	states[STARTUP] = true;
+	/*
 	bool running = true;
     bool runningEditor = true;
 	bool startup = true;
 	bool selectObject = false;
 	bool cooldown = false;
+	*/
 	Object* currentObject = NULL;
+	Object* playerObject = NULL;
 	
 
-	while (running)
+	while (states[RUNNING])
     {
 		dt = clock.getElapsedTime().asSeconds();
-		if(runningEditor)
+		if(states[EDITOR])
 		{
-			if(selectObject)
+			if(states[SELECTOBJECT])
 			{
 				solsystem.getObjects(&allObjects);
 				currentObject = getSelectedObject(&allObjects, &player);
 				allObjects.clear();
 			}
-			editor.edit(solsystem, &running, startup, currentObject);
-			startup = false;
+			editor.edit(solsystem, states, currentObject);
+			states[STARTUP] = false;
 			sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2),  window);
 			clock.restart();
 			window.setActive();
 
-			selectObject = false;
+			states[SELECTOBJECT] = false;
 			currentObject = NULL;
+			
+			states[EDITOR] = false;
 		}
-		clock.restart();
-		runningEditor = false;
 
-		handleEvents(&window, &running, &runningEditor, &selectObject, &cooldown, &item, &player, dt);
-		player.lookAtUpdate(dt);
+		else
+		{
+			clock.restart();
+			if (playerObject != NULL)
+			{
+				std::cout << player.position << std::endl;
+			
+				player.position = playerObject->position;
+
+				std::cout << playerObject->position << std::endl;
+			}
+			
+			handleEvents(&window, states, &item, playerObject, &player, dt);
+			player.lookAtUpdate(dt);
 
 			/////////////////////////////////   SKYBOX   /////////////////////////////////////////
-		window.setActive();
-		//drawSkybox(&player, &skyboxModel, skyboxShader, skyboxTexture);
+			window.setActive();
+			//drawSkybox(&player, &skyboxModel, skyboxShader, skyboxTexture);
 
-		glDisable(GL_DEPTH_TEST);
-		//skybox.set(player.position,  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
-		//skybox.draw(&player);
+			glDisable(GL_DEPTH_TEST);
+			//skybox.set(player.position,  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
+			//skybox.draw(&player);
+			skysphere.set(player.position,  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
+			skysphere.draw(&player);
+			glEnable(GL_DEPTH_TEST);
 
-		skysphere.set(player.position,  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
-		skysphere.draw(&player);
-		glEnable(GL_DEPTH_TEST);
+
 
 		
+			if(!states[COOLDOWN] && item == 1)
+			{
+				Object* newItem = presetMap["Earth"]->clone();
+				newItem->set(player.position,  cv::Vec3f(0.25,0.25,0.25), cv::Vec3f(0,0,0), 10*player.getLookAtDirection(), 1);
+				solsystem.addItem(newItem);
+				std::cout << 10*normalize(player.position - player.lookAtVector) << std::endl;
+				states[COOLDOWN] = true;
+			}
+			item = 0;
+			if(states[ENABLEGRAVITY] && playerObject == NULL)
+			{
+				playerObject = presetMap["Earth"]->clone();
+				playerObject->set(player.position,  cv::Vec3f(1.25,1.25,1.25), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
+				solsystem.addPlayerItem(playerObject);
+				states[ENABLEGRAVITY] = false;
+			}
+			if(states[DISABLEGRAVITY] && playerObject != NULL)
+			{
+				solsystem.removePlayerItem();
+				playerObject = NULL;
+				states[DISABLEGRAVITY] = false;
+			}
 
-		if(!cooldown && item == 1)
-		{
+			solsystem.update(physEngine, dt*0.5);
+			solsystem.draw(&player);
 
-			Object* newItem = presetMap["Earth"]->clone();
-			newItem->set(player.position,  cv::Vec3f(0.25,0.25,0.25), cv::Vec3f(0,0,0), 10*normalize(player.lookAtVector - player.position), 1);
-			solsystem.addItem(newItem);
-			std::cout << 10*normalize(player.position - player.lookAtVector) << std::endl;
-			cooldown = true;
+
+			window.display();
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
-		item = 0;
-		
-		solsystem.update(physEngine, dt*0.5);
-		solsystem.draw(&player);
-
-
-        window.display();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
+	}
     // release resources...
 	glDeleteVertexArrays(1, &sphereModel.VAO);
 	glDeleteVertexArrays(1, &skyboxModel.VAO);

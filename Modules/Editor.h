@@ -4,6 +4,7 @@
 #include "SolarSystem.h"
 #include "Object.h"
 #include "Model.h"
+#include "myUtils.h"
 
 class Editor
 {
@@ -13,7 +14,7 @@ public:
 		   std::map<std::string, GLuint> textureMap,
 		   std::map<std::string, GLuint> normalMap,
 		   std::map<std::string, Object*> presetMap);
-	void edit(SolarSystem& solsystem, bool* running, bool startUp, Object* currentObject);
+	void edit(SolarSystem& solsystem, std::vector<bool>& states, Object* currentObject);
 	void printHelp();
 	void printWelcome();
 	void deleteSolarSystem(SolarSystem& solsystem);

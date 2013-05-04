@@ -60,6 +60,21 @@ void SolarSystem::addItem(Object * item)
 	return;
 }
 
+void SolarSystem::addPlayerItem(Object * item)
+{
+	if (itemList.empty())
+		itemList.push_front(item);
+	else
+		itemList.push_back(item);
+	return;
+}
+
+void SolarSystem::removePlayerItem()
+{
+	itemList.pop_back();
+	return;
+}
+
 void SolarSystem::deleteItems()
 {
 	itemList.clear();

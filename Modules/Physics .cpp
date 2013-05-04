@@ -13,7 +13,7 @@ void Physics::updatePositions(std::list<Object*>& starList, std::list<Object*>& 
 		if (!(*it)->satelliteMap.empty())
 		{
 			Vec3f accMovement(0,0,0);
-			(*it)->satMapUpdate(massPosList, accMovement, dt);
+			(*it)->satMapUpdate(allPlanets, accMovement, dt);
 		}		
 	}
 
@@ -25,14 +25,14 @@ void Physics::updatePositions(std::list<Object*>& starList, std::list<Object*>& 
 		dl = (*it)->velocity*dt;
 		(*it)->update(dl);
 	}
-	massPosList.clear();
+	allPlanets.clear();
 	return;
 }
 
 Vec3f Physics::updateVelocities(std::list<Object*>& itemList, cv::Vec3f position, float dt)
 {
 	Vec3f accDV(0,0,0);
-	for (std::list<Object*>::iterator it = massPosList.begin(); it != massPosList.end(); it++)
+	for (std::list<Object*>::iterator it = allPlanets.begin(); it != allPlanets.end(); it++)
 	{
 		accDV += normalize((*it)->position - position) * gravity * (*it)->mass / pow(norm((*it)->position - position), 2)*dt;
 	}
@@ -43,7 +43,7 @@ Vec3f Physics::updateVelocities(std::list<Object*>& itemList, cv::Vec3f position
 void Physics::detectCollisions(std::list<Object*>& itemList, Object* object)
 {
 	float radius = object->scale(1);
-	for (std::list<Object*>::iterator it = massPosList.begin(); it != massPosList.end(); it++)
+	for (std::list<Object*>::iterator it = allPlanets.begin(); it != allPlanets.end(); it++)
 	{
 		Vec3f distVec = (*it)->position - object->position;
 		

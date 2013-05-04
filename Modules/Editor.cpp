@@ -24,14 +24,14 @@ Editor::Editor(std::map<std::string, Model*> _modelMap,
 }
 
 
-void Editor::edit(SolarSystem& solsystem, bool* running, bool startUp, Object* _currentObject)
+void Editor::edit(SolarSystem& solsystem, std::vector<bool>& states, Object* _currentObject)
 {
 	//initDefaultSystem(solsystem);
 	Object* currentObject = _currentObject;
 	//Object* currentObject = solsystem.starList.front();
 	//currentObject = presetMap["Moon"];
 	bool inEditor = true;
-	if(startUp)
+	if(states[STARTUP])
 	{
 		initDefaultSystem(solsystem);
 		printWelcome();
@@ -72,7 +72,7 @@ void Editor::edit(SolarSystem& solsystem, bool* running, bool startUp, Object* _
 		else if (command == "PRESET")
 			printPresets();
 		else if (command == "EXIT")
-			inEditor = *running = false;
+			states[EDITOR] = states[RUNNING] = false;
 		else
 			cout << "Bad command, type \"help\" for avaliable commands" << endl;
 	}
@@ -435,7 +435,7 @@ void Editor::initDefaultSystem(SolarSystem& solsystem)
 	Object* neptune = presetMap["Neptune"]->clone();
 	Object* pluto = presetMap["Pluto"]->clone();
 	
-	sun->set(cv::Vec3f(0,0,0),  cv::Vec3f(10,10,10), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 0);
+	sun->set(cv::Vec3f(0,0,0),  cv::Vec3f(10,10,10), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 0.25);
 	earth->set(cv::Vec3f(0,0,32),  cv::Vec3f(2,2,2), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0), 1);
 	moon->set(cv::Vec3f(0,0,27),  cv::Vec3f(0.75,0.75,0.75), cv::Vec3f(0,0,0), cv::Vec3f(0,-10,0), 1);
 	mercury->set(cv::Vec3f(0,0,15),  cv::Vec3f(1,1,1), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0), 1);

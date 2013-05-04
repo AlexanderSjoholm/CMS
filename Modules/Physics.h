@@ -17,7 +17,7 @@ public:
 private:
 	cv::Vec3f updateVelocities(std::list<Object*>& itemList,  cv::Vec3f position, float dt);
 	void detectCollisions(std::list<Object*>& itemList, Object* object);
-	std::list<Object*> massPosList;
+	std::list<Object*> allPlanets;
 
 	static const int gravity = 30;
 };

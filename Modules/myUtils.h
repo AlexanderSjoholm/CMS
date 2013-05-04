@@ -5,7 +5,25 @@
 #include "Model.h"
 #include <random>
 
-void handleEvents(sf::Window* window, bool* running, bool* editor, bool* selectObject, bool* cooldown, int* item, Player* player, float dt);
+#ifndef UTILS_H
+#define UTILS_H
+
+
+enum ProgramState
+{
+	STARTUP = 0,
+	RUNNING = 1,
+	EDITOR = 2,
+	SELECTOBJECT = 3,
+	COOLDOWN = 4,
+	ENABLEGRAVITY = 5,
+	GRAVITY = 6,
+	DISABLEGRAVITY = 7,
+	DERP
+};
+
+
+void handleEvents(sf::Window* window, std::vector<bool>& states, int* item, Object* playerObject, Player* player, float dt);
 void generateSphere(Model* model, int subdivisions);
 void bumpMySphere(Model* model, cv::Mat* bumpMap);
 void drawSkybox(Player *player, Model* model, GLuint program, GLuint texture);
@@ -30,3 +48,5 @@ extern GLfloat projectionMatrix[];
 extern GLuint noiseTexture;
 extern std::mt19937 generator;
 extern std::normal_distribution<double> normalDistribution;
+
+#endif // !UTILS_H
