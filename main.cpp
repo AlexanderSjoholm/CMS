@@ -129,6 +129,7 @@ int main()
 		dt = clock.getElapsedTime().asSeconds();
 		if(states[EDITOR])
 		{
+			window.setVisible(false);
 			if(states[SELECTOBJECT])
 			{
 				solsystem.getObjects(&allObjects);
@@ -145,6 +146,7 @@ int main()
 			currentObject = NULL;
 			
 			states[EDITOR] = false;
+			window.setVisible(true);
 		}
 
 		else
