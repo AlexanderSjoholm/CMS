@@ -47,6 +47,13 @@ void Player::lookAtUpload(GLuint program)
 	glUniformMatrix4fv(glGetUniformLocation(program, "lookAtMatrix"), 1, GL_TRUE, lookAtMatrix.ptr<GLfloat>());
 }
 
+void Player::move(cv::Vec3f newPos)
+{
+	cv::Vec3f prevPos = position;
+	position += newPos - position;
+	lookAtVector += position - prevPos;
+}
+
 void Player::moveUp(float dt)
 {
 	std::cout << "moveUp" << std::endl;

@@ -40,16 +40,20 @@ void SolarSystem::getObjects(std::list<Object*>* objectList)
 
 void SolarSystem::draw(Player * player, float dt)
 {
+	// Get all objects (needed for ray-casting)
+	std::list<Object*> allObjects;
+	getObjects(&allObjects);
+	
 	//Draw everything
 	if (starList.empty())
 		return;
 	for (std::list<Object*>::iterator it = starList.begin(); it != starList.end(); it++)
 	{
-		(*it)->draw(player, dt);
+		(*it)->draw(player, &allObjects, dt);
 	}
 	for (std::list<Object*>::iterator it = itemList.begin(); it != itemList.end(); it++)
 	{
-		(*it)->draw(player, dt);
+		(*it)->draw(player, &allObjects, dt);
 	}
 	return;
 }

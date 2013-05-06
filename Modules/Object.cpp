@@ -85,11 +85,11 @@ void Object::init(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GL
 	set(position, scale, rotAngles, velocity, 0);
 }
 
-void Object::draw(Player* player, float dt)
+void Object::draw(Player* player,std::list<Object*>* allObjects, float dt)
 {
 	for(std::map<float, Object*>::iterator it = satelliteMap.begin(); it != satelliteMap.end(); ++it)
 	{
-		it->second->draw(player, dt);
+		it->second->draw(player, allObjects, dt);
 	}
 	
 	glUseProgram(program);

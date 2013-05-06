@@ -12,6 +12,7 @@ public:
 	void lookAtUpdate(float dt);
 	void lookAtUpload(GLuint program);
 
+	void move(cv::Vec3f newPos);
 	void moveForward(float dt);
 	void moveBackward(float dt);
 	void moveLeft(float dt);

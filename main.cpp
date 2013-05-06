@@ -157,7 +157,8 @@ int main()
 			{
 				std::cout << player.position << std::endl;
 			
-				player.position = playerObject->position;
+				player.move(playerObject->position);
+				//player.position = playerObject->position;
 
 				std::cout << playerObject->position << std::endl;
 			}
@@ -173,7 +174,7 @@ int main()
 			//skybox.set(player.position,  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
 			//skybox.draw(&player);
 			skysphere.set(player.position,  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
-			skysphere.draw(&player, dt);
+			skysphere.draw(&player, NULL, dt);
 			glEnable(GL_DEPTH_TEST);
 
 
