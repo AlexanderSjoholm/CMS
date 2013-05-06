@@ -22,7 +22,7 @@ public:
 				GLuint _texture0 = 0, GLuint _texture1 = 0, 
 				GLuint _specularityMap = 0, GLuint _normalMap = 0);
 
-	void draw(Player* player);
+	void draw(Player* player, float dt);
 	void update(cv::Vec3f position,		
 				cv::Vec3f scale,	
 				cv::Vec3f rotAngles);	

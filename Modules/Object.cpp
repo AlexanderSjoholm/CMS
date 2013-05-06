@@ -85,11 +85,11 @@ void Object::init(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GL
 	set(position, scale, rotAngles, velocity, 0);
 }
 
-void Object::draw(Player* player)
+void Object::draw(Player* player, float dt)
 {
 	for(std::map<float, Object*>::iterator it = satelliteMap.begin(); it != satelliteMap.end(); ++it)
 	{
-		it->second->draw(player);
+		it->second->draw(player, dt);
 	}
 	
 	glUseProgram(program);
@@ -159,7 +159,13 @@ void Object::draw(Player* player)
 	float randomVector[] = {normalDistribution(generator), normalDistribution(generator), normalDistribution(generator)};
 	glUniform3fv(glGetUniformLocation(program, "noise"), 1, randomVector);
 
+	// Uplaod time
+	glUniform1fv(glGetUniformLocation(program, "time"), 1, &dt);
+	
+	
 	// Upload lightsource
+
+
 
 
 	// Upload PlanetPositions and radius
@@ -220,8 +226,8 @@ void Object::getSatellites(std::list<Object*>* objectList)
 		for(std::map<float, Object*>::iterator it = satelliteMap.begin(); it != satelliteMap.end(); ++it)
 			{
 				it->second->getSatellites(objectList);
-				objectList->push_front(this);
 			}
+		objectList->push_front(this);
 	}
 }
 

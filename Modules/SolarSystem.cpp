@@ -38,18 +38,18 @@ void SolarSystem::getObjects(std::list<Object*>* objectList)
 	return;
 }
 
-void SolarSystem::draw(Player * player)
+void SolarSystem::draw(Player * player, float dt)
 {
 	//Draw everything
 	if (starList.empty())
 		return;
 	for (std::list<Object*>::iterator it = starList.begin(); it != starList.end(); it++)
 	{
-		(*it)->draw(player);
+		(*it)->draw(player, dt);
 	}
 	for (std::list<Object*>::iterator it = itemList.begin(); it != itemList.end(); it++)
 	{
-		(*it)->draw(player);
+		(*it)->draw(player, dt);
 	}
 	return;
 }

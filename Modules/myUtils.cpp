@@ -85,7 +85,10 @@ void handleEvents(sf::Window* window, std::vector<bool>& states, int* item, Obje
 
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	{
 		player->moveUp(dt);
+		std::cout << "Time: " << dt << std::endl;
+	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
 		player->moveDown(dt);
 		//std::cout << "Shit" << std::endl;

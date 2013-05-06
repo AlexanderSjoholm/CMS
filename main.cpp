@@ -33,6 +33,7 @@ std::vector<bool> states(8,false);
 std::list<Object*> allObjects;
 
 float dt = 0;
+float accTime = 0;
 //GLuint skyboxShader, skyboxTexture;
 
 
@@ -46,7 +47,7 @@ int main()
 {
 	
 	// SFML window that will host our OpenGL magic
-    sf::Window window(sf::VideoMode(1920, 1080), "OpenGL", sf::Style::Fullscreen, sf::ContextSettings(32));
+    sf::Window window(sf::VideoMode(1920, 1080), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
     window.setVerticalSyncEnabled(true);
 	window.setMouseCursorVisible(false);
 	sf::View view;
@@ -172,9 +173,8 @@ int main()
 			//skybox.set(player.position,  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
 			//skybox.draw(&player);
 			skysphere.set(player.position,  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
-			skysphere.draw(&player);
+			skysphere.draw(&player, dt);
 			glEnable(GL_DEPTH_TEST);
-
 
 
 		
@@ -202,7 +202,8 @@ int main()
 			}
 
 			solsystem.update(physEngine, dt*0.5);
-			solsystem.draw(&player);
+			solsystem.draw(&player, accTime);
+			accTime += dt;
 
 
 			window.display();
