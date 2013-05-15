@@ -27,11 +27,12 @@ Editor::Editor(std::map<std::string, Model*> _modelMap,
 void Editor::edit(SolarSystem& solsystem, std::vector<bool>& states, Object* _currentObject)
 {
 	//initDefaultSystem(solsystem);
+	cin.clear();
 	Object* currentObject = _currentObject;
 	//Object* currentObject = solsystem.starList.front();
 	//currentObject = presetMap["Moon"];
-	//bool inEditor = true;
-	bool inEditor = false;
+	bool inEditor = true;
+	//bool inEditor = false;
 	if(states[STARTUP])
 	{
 		initDefaultSystem(solsystem);
