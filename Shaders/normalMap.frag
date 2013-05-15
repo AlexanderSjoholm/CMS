@@ -27,6 +27,9 @@ out vec4 out_Color;
 
 void main(void)
 {
+	// Det råkade blo speglat
+	vec2 texFix = exTexCoord;
+	texFix[0] = 1-texFix[0];
 	// -------------- Shadows --------------
 	
 	vec3 lightPosition = vec3(0, 0, 0);
@@ -95,7 +98,7 @@ void main(void)
 	// Normal Map
 	
 	//vec4 normalMap = texture(Tex3, exTexCoord);
-	vec3 normalMap = texture(Tex3, exTexCoord).bgr;
+	vec3 normalMap = texture(Tex3, texFix).bgr;
 	normalMap = normalMap * 2 - 1; 
 	//vec4 texel0 = texture(Tex0, exTexCoord);
 	
