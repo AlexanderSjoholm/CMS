@@ -49,11 +49,11 @@ void SolarSystem::draw(Player * player, float dt)
 		return;
 	for (std::list<Object*>::iterator it = starList.begin(); it != starList.end(); it++)
 	{
-		(*it)->draw(player, &allObjects, dt);
+		(*it)->draw(player, 0, dt);
 	}
 	for (std::list<Object*>::iterator it = itemList.begin(); it != itemList.end(); it++)
 	{
-		(*it)->draw(player, &allObjects, dt);
+		(*it)->draw(player, 0, dt);
 	}
 	return;
 }

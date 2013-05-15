@@ -19,6 +19,8 @@ enum ProgramState
 	ENABLEGRAVITY = 5,
 	GRAVITY = 6,
 	DISABLEGRAVITY = 7,
+	NORMALMAP = 8,
+	SPECULARITYMAP = 9,
 	DERP
 };
 
@@ -27,6 +29,8 @@ void handleEvents(sf::Window* window, std::vector<bool>& states, int* item, Obje
 void generateSphere(Model* model, int subdivisions);
 void bumpMySphere(Model* model, cv::Mat* bumpMap);
 void drawSkybox(Player *player, Model* model, GLuint program, GLuint texture);
+
+float* makeArray(const std::vector<cv::Vec3f> arr);
 
 Object* getSelectedObject(std::list<Object*>* allObjects, Player* player);
 /*

@@ -30,7 +30,8 @@ void Editor::edit(SolarSystem& solsystem, std::vector<bool>& states, Object* _cu
 	Object* currentObject = _currentObject;
 	//Object* currentObject = solsystem.starList.front();
 	//currentObject = presetMap["Moon"];
-	bool inEditor = true;
+	//bool inEditor = true;
+	bool inEditor = false;
 	if(states[STARTUP])
 	{
 		initDefaultSystem(solsystem);

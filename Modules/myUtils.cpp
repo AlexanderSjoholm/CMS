@@ -50,6 +50,20 @@ void handleEvents(sf::Window* window, std::vector<bool>& states, int* item, Obje
 				window->close();
 				window->create(sf::VideoMode::getDesktopMode(), "OpenGL", sf::Style::Fullscreen, sf::ContextSettings(32));
 			}
+			if (event.key.code == sf::Keyboard::B)
+			{
+				if(states[NORMALMAP])
+					states[NORMALMAP] = false;
+				else
+					states[NORMALMAP] = true;
+			}
+			if (event.key.code == sf::Keyboard::N)
+			{
+				if(states[SPECULARITYMAP])
+					states[SPECULARITYMAP] = false;
+				else
+					states[SPECULARITYMAP] = true;
+			}
 		}
 		else if (event.type == sf::Event::MouseButtonReleased)
 				{
@@ -388,4 +402,16 @@ Object* getSelectedObject(std::list<Object*>* allObjects, Player* player)
 	
 	return NULL;
 		
+}
+
+float* makeArray(const std::vector<cv::Vec3f> arr)
+{
+    unsigned int i, j;
+    float *verts = new float[3 * arr.size()];
+
+    for (i = 0; i < arr.size(); i++)
+        for (j = 0; j < 3; j++)
+            verts[i*3 + j] = arr[i][j];
+
+    return verts;
 }

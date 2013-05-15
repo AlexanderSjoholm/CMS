@@ -85,11 +85,25 @@ void Object::init(	Model* _model, GLuint _program, cv::Vec4f shaderParametes, GL
 	set(position, scale, rotAngles, velocity, 0);
 }
 
-void Object::draw(Player* player,std::list<Object*>* allObjects, float dt)
+/*
+float* makeArray(const std::vector<Vec3f> arr)
+{
+    unsigned int i, j;
+    float *verts = new float[3 * arr.size()];
+
+    for (i = 0; i < arr.size(); i++)
+        for (j = 0; j < 3; j++)
+            verts[i*3 + j] = arr[i][j];
+
+    return verts;
+}
+*/
+
+void Object::draw(Player* player, float dt, GLint numberOfPlanets, GLfloat* positions, GLfloat* radius)
 {
 	for(std::map<float, Object*>::iterator it = satelliteMap.begin(); it != satelliteMap.end(); ++it)
 	{
-		it->second->draw(player, allObjects, dt);
+		it->second->draw(player, dt, numberOfPlanets, positions, radius);
 	}
 	
 	glUseProgram(program);
@@ -165,15 +179,44 @@ void Object::draw(Player* player,std::list<Object*>* allObjects, float dt)
 	
 	// Upload lightsource
 
+	// At the moment assumed to be in the origin
 
-
+	//vector<Vec3f> positions;
 
 	// Upload PlanetPositions and radius
-	float planetPosition[] = {0, 0, -10};
-	glUniform3fv(glGetUniformLocation(program, "planetPosition"), 1, planetPosition);
+	//for (std::list<Object*>::iterator i = allObjects->begin(); i != allObjects->end(); i++)
+	//{
+		//positions.push_back((*i)->position);
+	//}
 
-	float planetRadius = 2;
-	glUniform1fv(glGetUniformLocation(program, "planetRadius"), 1, &planetRadius);
+	float planetPosition[] = {45, 0, 0};
+	//glUniform3fv(glGetUniformLocation(program, "planetPosition"), 1, planetPosition);
+	
+	GLfloat* test;
+	vector<Vec3f> testv;
+	Vec3f vec1;
+
+	vec1 = Vec3f(45, 0, 0);
+	testv.push_back(vec1);
+	vec1 = Vec3f(40, 5, 0);
+	testv.push_back(vec1);
+	vec1 = Vec3f(45, -5, 0);
+	testv.push_back(vec1);
+	
+	//glUniform3fv(glGetUniformLocation(program, "planetPosition"), 1, positions);
+	//glUniform3fv(glGetUniformLocation(program, "planetPosition"), 1, Mat(*testv.begin()).ptr<GLfloat>());
+
+	GLfloat* arr = makeArray(testv);
+	int count = testv.size();
+	//glUniform3fv(glGetUniformLocation(program, "planetPosition"), 1, arr);
+
+	glUniform3fv(glGetUniformLocation(program, "positions"), 10, positions);
+	
+
+	//float planetRadius = 2;
+	//glUniform1fv(glGetUniformLocation(program, "planetRadius"), 1, &planetRadius);
+	//glUniform3fv(glGetUniformLocation(program, "planetRadius"), 10, radius);
+	glUniform3fv(glGetUniformLocation(program, "radius"), 10, radius);
 
 	// Bind the model's VAO and buffers to the program specified by the object
 	glBindVertexArray(model->VAO);
@@ -192,6 +235,8 @@ void Object::draw(Player* player,std::list<Object*>* allObjects, float dt)
 	
 	glDrawElements(GL_TRIANGLES, model->numberOfIndices, GL_UNSIGNED_INT, 0);
 }
+
+
 
 void Object::addSatellite(Object * object, float _distance)
 {

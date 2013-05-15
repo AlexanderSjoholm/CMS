@@ -4,7 +4,7 @@
 
 Player::Player()
 {
-	position		= cv::Vec3f(5, 0, 5);
+	position		= cv::Vec3f(-20, 0, 0);
 	lookAtVector	= cv::Vec3f(0, 0, 0);
 	upVector		= cv::Vec3f(0, 1, 0);
 

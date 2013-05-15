@@ -131,6 +131,9 @@ void shaderInit(GLuint* program, std::string vertexPath, std::string fragmentPat
 	//fragmentCode = readFile2Char("Shaders/test.frag");
 	vertexCode = readFile2Char((char*)vertexPath.c_str());
 	fragmentCode = readFile2Char((char*)fragmentPath.c_str());	
+
+	//cout << "Vertex: " << vertexCode << endl;
+
 	// Print shaders just for fun
 	//cout << vertexCode << endl << fragmentCode;
 	glShaderSource(vertexShader, 1, (const GLchar **) &vertexCode, NULL);  
@@ -148,7 +151,21 @@ void shaderInit(GLuint* program, std::string vertexPath, std::string fragmentPat
 
 	// Link program. Each shader attached will become executalbes to run shader processor.
 	glLinkProgram(*program);
+
+	GLint linkStatus = 10;
+	glGetProgramiv(*program, GL_LINK_STATUS, &linkStatus);
+
+	cout << "Linker status: " << linkStatus << endl;
+
+	if(linkStatus == 0){
+		cout << "shader linkage fail, l2shader n00b" << endl;
+		cout << "link status was: " << linkStatus << endl;
+		cout << "opengl error after linkage is: " << hex << glGetError << endl;
+	}
+
 	glUseProgram(*program);
+
+	cout << "OpenGL version: " << glGetString(GL_VERSION) << endl;
 }
 
 void GLInit()
