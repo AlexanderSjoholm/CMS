@@ -25,7 +25,7 @@ std::map<std::string, GLuint> shaderMap;
 std::map<std::string, GLuint> textureMap;
 std::map<std::string, GLuint> normalMap;
 std::map<std::string, Object*> presetMap;
-std::vector<bool> states(8,false);
+std::vector<bool> states(10,false);
 
 //std::vector<bool> states;
 
@@ -41,6 +41,8 @@ SolarSystem solsystem;
 Physics physEngine;
 std::string derp;
 //Model* skyboxModel = new Model;
+
+
 
 
 int main()
@@ -64,8 +66,9 @@ int main()
 	GLInit();
 	
 	// ---------------------- MODELS -------------------------------
-	Model		sphereModel;
+	Model		sphereModel, unitSquareModel;
 	generateSphere(&sphereModel, 50);						sphereModel.upload();
+	myLoadObj("Models/unitSquare.obj", &unitSquareModel);	unitSquareModel.upload();
 
 	loadNoise();
 
@@ -81,29 +84,38 @@ int main()
 	// Initiation of all objects in the program
 	// ShaderParameters = (ambientCoeff, diffuseCoeff, specularCoeff, specularExponent)
 	cv::Vec4f standardShaderParameters(0.2f, 0.5f, 0.8f, 10);
-		
-	// ---------------------- SKYBOX -------------------------------
-	Model skyboxModel;	
-	myLoadObj("Models/myUnitCube.obj", &skyboxModel);				skyboxModel.upload();
 
-	Object skybox;
-	GLuint skyboxTexture, skyboxShader;
-	LoadTGATextureSimple("Textures/spaceBox4.tga", &skyboxTexture);
+	Object squareNormalMap, squareSpecularityMap;
+	GLuint earthNormalMap, earthSpecularityMap, earthTextureDay, earthTextureNight;
+	GLuint normalMapShader, specularityMapShader;
 
-	shaderInit(&skyboxShader, "Shaders/skybox.vert", "Shaders/skybox.frag");
+	shaderInit(&phongNoTex, "Shaders/phongNoTex.vert", "Shaders/phongNoTex.frag");
+	shaderInit(&normalMapShader, "Shaders/normalMap.vert", "Shaders/normalMap.frag");
+	shaderInit(&specularityMapShader, "Shaders/specularityMap.vert", "Shaders/specularityMap.frag");
+	
+	LoadTGATextureSimple("Textures/earthTextureDay.tga", &earthTextureDay);
+	LoadTGATextureSimple("Textures/earthTextureNight.tga", &earthTextureNight);
+	LoadTGATextureSimple("Textures/earthNormalMap.tga", &earthNormalMap);
+	LoadTGATextureSimple("Textures/earthSpecularityMap.tga", &earthSpecularityMap);
 
-	skybox.init(&skyboxModel, skyboxShader, standardShaderParameters, skyboxTexture);
-	skybox.set(player.position,  cv::Vec3f(1,1,1), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
-	std::cout << "cv::vec3:	  " << cv::Vec3f(5,5,5) << std::endl;
-	std::cout << "Player Pos: " << player.position << std::endl;
+	//squareNormalMap.init(&unitSquareModel, phongNoTex, standardShaderParameters, 0, 0, 0, earthNormalMap);
+	squareNormalMap.init(&unitSquareModel, normalMapShader, standardShaderParameters, 0, 0, 0, earthNormalMap);
+	squareSpecularityMap.init(&unitSquareModel, specularityMapShader, standardShaderParameters, earthTextureDay, earthTextureNight, earthSpecularityMap, earthNormalMap);
+	squareNormalMap.set(cv::Vec3f(100,0,0),  cv::Vec3f(50,50,50), cv::Vec3f(0, pi/2, -pi/2), cv::Vec3f(0,0,0), 1);
+	squareSpecularityMap.set(cv::Vec3f(100,0,0),  cv::Vec3f(50,50,50), cv::Vec3f(0, pi/2, -pi/2), cv::Vec3f(0,0,0), 1);
+	
 
 	// ---------------------- SKYSPHERE -------------------------------
 	Object skysphere;
-	GLuint skysphereTexture;
+	GLuint skysphereTexture, skyboxShader;
 	LoadTGATextureSimple("Textures/spaceBox6.tga", &skysphereTexture);
+
+
+	shaderInit(&skyboxShader, "Shaders/skybox.vert", "Shaders/skybox.frag");
 
 	skysphere.init(&sphereModel, skyboxShader, standardShaderParameters, skysphereTexture);
 	skysphere.set(player.position,  cv::Vec3f(1,1,1), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
+
 	
 
 
@@ -166,6 +178,28 @@ int main()
 			handleEvents(&window, states, &item, playerObject, &player, dt);
 			player.lookAtUpdate(dt);
 
+			// Plocka ut all planeters positioner
+			std::list<Object*> allObjects;
+			solsystem.getObjects(&allObjects);
+			std::vector<cv::Vec3f> positionVector;
+			std::vector<cv::Vec3f> radiusVector;
+			
+
+			std::list<Object*>::iterator i = allObjects.begin();
+
+			for (i++ ; i != allObjects.end(); ++i)
+			{
+				positionVector.push_back((*i)->position);
+				radiusVector.push_back((*i)->scale);
+				std::cout << "Scale: " << (*i)->scale << std::endl;
+			}
+
+			int numberOfPlanets = positionVector.size();
+
+			GLfloat* positions = makeArray(positionVector);
+			GLfloat* radius = makeArray(radiusVector);
+			
+
 			/////////////////////////////////   SKYBOX   /////////////////////////////////////////
 			window.setActive();
 			//drawSkybox(&player, &skyboxModel, skyboxShader, skyboxTexture);
@@ -174,8 +208,23 @@ int main()
 			//skybox.set(player.position,  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
 			//skybox.draw(&player);
 			skysphere.set(player.position,  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 1);
-			skysphere.draw(&player, NULL, dt);
+			skysphere.draw(&player, 0, dt);
 			glEnable(GL_DEPTH_TEST);
+
+			/////////////////////////////////   ALX   /////////////////////////////////////////
+
+			if (states[NORMALMAP])
+			{
+				squareNormalMap.draw(&player, dt, numberOfPlanets, positions, radius);
+			}
+			if (states[SPECULARITYMAP])
+			{
+				squareSpecularityMap.draw(&player, dt, numberOfPlanets, positions, radius);
+			}
+
+			/////////////////////////////////   ALX   /////////////////////////////////////////
+
+
 
 
 		
@@ -206,17 +255,17 @@ int main()
 			solsystem.draw(&player, accTime);
 			accTime += dt;
 
-
 			window.display();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
+
+		cv::waitKey(0);
 	}
     // release resources...
 	glDeleteVertexArrays(1, &sphereModel.VAO);
-	glDeleteVertexArrays(1, &skyboxModel.VAO);
+	//glDeleteVertexArrays(1, &skyboxModel.VAO);
 	//glDeleteVertexArrays(1, &unitSquareModel.VAO);
 	//glDeleteVertexArrays(1, &groundModel.VAO);
 	
-    return 0;
+	return 0;
 }
-
