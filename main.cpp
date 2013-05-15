@@ -191,7 +191,7 @@ int main()
 			{
 				positionVector.push_back((*i)->position);
 				radiusVector.push_back((*i)->scale);
-				std::cout << "Scale: " << (*i)->scale << std::endl;
+				//std::cout << "Scale: " << (*i)->scale << std::endl;
 			}
 
 			int numberOfPlanets = positionVector.size();

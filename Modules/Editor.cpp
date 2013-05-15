@@ -437,16 +437,16 @@ void Editor::initDefaultSystem(SolarSystem& solsystem)
 	Object* neptune = presetMap["Neptune"]->clone();
 	Object* pluto = presetMap["Pluto"]->clone();
 	
-	sun->set(cv::Vec3f(0,0,0),  cv::Vec3f(10,10,10), cv::Vec3f(0,0,0), cv::Vec3f(0,0,0), 0.25);
-	earth->set(cv::Vec3f(0,0,32),  cv::Vec3f(2,2,2), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0), 1);
-	moon->set(cv::Vec3f(0,0,27),  cv::Vec3f(0.75,0.75,0.75), cv::Vec3f(0,0,0), cv::Vec3f(0,-10,0), 1);
-	mercury->set(cv::Vec3f(0,0,15),  cv::Vec3f(1,1,1), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0), 1);
-	venus->set(cv::Vec3f(0,0,22),  cv::Vec3f(1.9,1.9,1.9), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0), 1);
-	mars->set(cv::Vec3f(0,0,45),  cv::Vec3f(1.75,1.75,1.75), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0), 1);
-	jupiter->set(cv::Vec3f(0,0,65),  cv::Vec3f(5,5,5), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0), 1);
-	saturn->set(cv::Vec3f(0,0,80),  cv::Vec3f(4,4,4), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0), 1);
-	uranus->set(cv::Vec3f(0,0,95),  cv::Vec3f(3,3,3), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0), 1);
-	neptune->set(cv::Vec3f(0,0,115),  cv::Vec3f(3,3,3), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0), 1);
+	sun->set(cv::Vec3f(0,0,0),  cv::Vec3f(10,10,10), cv::Vec3f(0,0.5,0), cv::Vec3f(0,0,0), 0.25);
+	earth->set(cv::Vec3f(0,0,32),  cv::Vec3f(2,2,2), cv::Vec3f(0,-3,0), cv::Vec3f(0,10,0), 1);
+	moon->set(cv::Vec3f(0,0,27),  cv::Vec3f(0.75,0.75,0.75), cv::Vec3f(0,-3,0), cv::Vec3f(0,-10,0), 1);
+	mercury->set(cv::Vec3f(0,0,15),  cv::Vec3f(1,1,1), cv::Vec3f(0,6,0), cv::Vec3f(0,10,0), 1);
+	venus->set(cv::Vec3f(0,0,22),  cv::Vec3f(1.9,1.9,1.9), cv::Vec3f(0,-2,0), cv::Vec3f(0,10,0), 1);
+	mars->set(cv::Vec3f(0,0,45),  cv::Vec3f(1.75,1.75,1.75), cv::Vec3f(0,4,0), cv::Vec3f(0,10,0), 1);
+	jupiter->set(cv::Vec3f(0,0,65),  cv::Vec3f(5,5,5), cv::Vec3f(0,-4,0), cv::Vec3f(0,10,0), 1);
+	saturn->set(cv::Vec3f(0,0,80),  cv::Vec3f(4,4,4), cv::Vec3f(0,4,0), cv::Vec3f(0,10,0), 1);
+	uranus->set(cv::Vec3f(0,0,95),  cv::Vec3f(3,3,3), cv::Vec3f(0,-3,0), cv::Vec3f(0,10,0), 1);
+	neptune->set(cv::Vec3f(0,0,115),  cv::Vec3f(3,3,3), cv::Vec3f(0,3,0), cv::Vec3f(0,10,0), 1);
 	pluto->set(cv::Vec3f(0,0,130),  cv::Vec3f(1,1,1), cv::Vec3f(0,0,0), cv::Vec3f(0,10,0), 1);
 	
 	earth->addSatellite(moon, 5);

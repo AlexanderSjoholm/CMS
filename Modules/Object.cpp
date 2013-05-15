@@ -105,7 +105,6 @@ void Object::draw(Player* player, float dt, GLint numberOfPlanets, GLfloat* posi
 	{
 		it->second->draw(player, dt, numberOfPlanets, positions, radius);
 	}
-	
 	glUseProgram(program);
 
 	// Upload Transformations
@@ -296,7 +295,7 @@ void Object::satMapUpdate(std::list<Object*>& allPlanets, Vec3f _accMovement, fl
 		relPos += relPos.cross(normalize(velocity))*dt*speed/distance;
 		normalize(relPos);
 		Vec3f accMovement = (relPos * distance - position + orbits->position) + _accMovement;
-		update(accMovement);
+		update(accMovement,dt);
 		
 		for(std::map<float, Object*>::iterator it = satelliteMap.begin(); it != satelliteMap.end(); ++it)
 		{
@@ -314,10 +313,10 @@ void Object::satMapUpdate(std::list<Object*>& allPlanets, Vec3f _accMovement, fl
 
 }
 
-void Object::update(cv::Vec3f _dl)
+void Object::update(cv::Vec3f _dl, float dt)
 {
 	position += _dl;
-
+	rotAngles += dt*normalize(rotAngles);
 	updateMatrices();
 }
 

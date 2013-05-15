@@ -26,7 +26,7 @@ public:
 	void update(cv::Vec3f position,		
 				cv::Vec3f scale,	
 				cv::Vec3f rotAngles);	
-	void update(cv::Vec3f dl);
+	void update(cv::Vec3f dl, float dt = 0);
 	void satMapUpdate(std::list<Object*>& allPlanets, cv::Vec3f accMovement, float dt);
 
 	void set(cv::Vec3f position, 

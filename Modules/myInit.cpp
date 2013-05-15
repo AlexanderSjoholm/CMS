@@ -1,7 +1,7 @@
 // myInit.cpp
 
 #include "stdafx.h"
-//#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
+#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
 #include <fstream>
 #include "myInit.h"
 
