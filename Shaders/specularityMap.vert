@@ -18,9 +18,9 @@ uniform mat4 lookAtMatrix;
 
 void main(void)
 {
-	gl_Position = projectionMatrix * lookAtMatrix * scaleTrans * rotY * rotZ * rotX * vec4(inPosition, 1.0);
-	exPosition = vec3(scaleTrans * rotY * rotZ * rotX * vec4(inPosition, 1.0));
-	normalTransform = mat3(scaleTrans * rotY * rotZ * rotX);
+	gl_Position = projectionMatrix * lookAtMatrix * scaleTrans * rotX * rotZ * rotY * vec4(inPosition, 1.0);
+	exPosition = vec3(scaleTrans * rotX * rotZ * rotY * vec4(inPosition, 1.0));
 	exNormal = inNormal;
+	normalTransform = mat3(scaleTrans * rotX * rotZ * rotY);
 	exTexCoord = inTexCoord;
 }
