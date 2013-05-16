@@ -135,10 +135,11 @@ void handleEvents(sf::Window* window, std::vector<bool>& states, int* item, Obje
 
 // The rotation matrices will be changed for animation
 // Perspective
+#define ratio 16/9
 #define nearFrustum 2.0
 #define farFrustum 500.0
-#define right 1.0
-#define left -1.0
+#define right 1.0*ratio
+#define left -1.0*ratio
 #define top 1.0
 #define bottom -1.0
 GLfloat projectionMatrix[] = {	2.0f*nearFrustum/(right-left), 0.0f,					(right+left)/(right-left),	0.0f,
