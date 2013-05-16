@@ -99,6 +99,7 @@ void main(void)
 	
 	//vec4 normalMap = texture(Tex3, exTexCoord);
 	vec3 normalMap = texture(Tex3, texFix).bgr;
+	//normalMap[1] = -normalMap[1];
 	normalMap = normalMap * 2 - 1; 
 	//vec4 texel0 = texture(Tex0, exTexCoord);
 	
