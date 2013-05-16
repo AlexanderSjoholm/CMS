@@ -43,12 +43,13 @@ std::string derp;
 //Model* skyboxModel = new Model;
 
 
-
+#
 
 int main()
 {
 	
 	// SFML window that will host our OpenGL magic
+	
     sf::Window window(sf::VideoMode(1920, 1080), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
     window.setVerticalSyncEnabled(true);
 	window.setMouseCursorVisible(false);
@@ -101,8 +102,8 @@ int main()
 	//squareNormalMap.init(&unitSquareModel, phongNoTex, standardShaderParameters, 0, 0, 0, earthNormalMap);
 	squareNormalMap.init(&unitSquareModel, normalMapShader, standardShaderParameters, 0, 0, 0, earthNormalMap);
 	squareSpecularityMap.init(&unitSquareModel, specularityMapShader, standardShaderParameters, earthTextureDay, earthTextureNight, earthSpecularityMap, earthNormalMap);
-	squareNormalMap.set(cv::Vec3f(100,0,0),  cv::Vec3f(50,50,50), cv::Vec3f(0, pi/2, -pi/2), cv::Vec3f(0,0,0), 1);
-	squareSpecularityMap.set(cv::Vec3f(100,0,0),  cv::Vec3f(50,50,50), cv::Vec3f(0, pi/2, -pi/2), cv::Vec3f(0,0,0), 1);
+	squareNormalMap.set(cv::Vec3f(100,0,0),  cv::Vec3f(50,50,100), cv::Vec3f(0, pi/2, -pi/2), cv::Vec3f(0,0,0), 1);
+	squareSpecularityMap.set(cv::Vec3f(100,0,0),  cv::Vec3f(50,50,100), cv::Vec3f(0, pi/2, -pi/2), cv::Vec3f(0,0,0), 1);
 	
 
 	// ---------------------- SKYSPHERE -------------------------------
