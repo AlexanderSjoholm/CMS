@@ -2,7 +2,6 @@
 
 #include "Modules/myInit.h"
 #include "Modules/myUtils.h"
-#include "Modules/GL_utilities.h"
 #include "Modules/myLoadObj.h"
 #include "Modules/LoadTGA2.h"
 #include "Modules/Model.h"
