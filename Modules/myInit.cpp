@@ -1,7 +1,7 @@
 // myInit.cpp
 
 #include "stdafx.h"
-#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
+//#include "../../Repository/stdafx.h" // Gör att editorn hittar filen (suck)
 #include <fstream>
 #include "myInit.h"
 
@@ -214,6 +214,9 @@ void initPresetSystem(std::map<std::string, GLuint>& shaderMap,
 
 	Object* pluto = new Object(modelMap["HR Sphere"], shaderMap["Planet"], cv::Vec4f(0.2f, 0.5f, 0.8f, 10), textureMap["Pluto"], 0, 0, 0);
 	presetMap.insert(std::pair<std::string, Object*>("Pluto", pluto->clone()));
+
+	Object* nepturius = new Object(modelMap["HR Sphere"], shaderMap["Earth"], cv::Vec4f(0.2f, 0.5f, 0.5f, 3), textureMap["Mercury"], textureMap["Neptune"], 0, 0);
+	presetMap.insert(std::pair<std::string, Object*>("Nepturius", nepturius->clone()));
 
 }
 
