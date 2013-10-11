@@ -173,7 +173,8 @@ void GLInit()
 	// GL inits
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
 	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
+	//glDisable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 }
 
 void initPresetSystem(std::map<std::string, GLuint>& shaderMap,
